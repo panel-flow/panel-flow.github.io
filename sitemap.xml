@@ -25,27 +25,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/privacy-policy-en.html"/>
   </url>
   <url>
-    <loc>https://panel-flow.github.io/terms-en.html</loc>
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/terms-en.html"/>
-    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/terms-es-MX.html"/>
-    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/terms-pt-BR.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/terms-en.html"/>
-  </url>
-  <url>
-    <loc>https://panel-flow.github.io/terms-es-MX.html</loc>
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/terms-en.html"/>
-    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/terms-es-MX.html"/>
-    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/terms-pt-BR.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/terms-en.html"/>
-  </url>
-  <url>
-    <loc>https://panel-flow.github.io/terms-pt-BR.html</loc>
-    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/terms-en.html"/>
-    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/terms-es-MX.html"/>
-    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/terms-pt-BR.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/terms-en.html"/>
-  </url>
-  <url>
     <loc>https://panel-flow.github.io/support-en.html</loc>
     <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/support-en.html"/>
     <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/support-es-MX.html"/>

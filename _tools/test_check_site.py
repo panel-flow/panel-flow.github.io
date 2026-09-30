@@ -58,12 +58,15 @@ class OfflineTests(unittest.TestCase):
     def test_a_complete_site_passes(self):
         self.assertEqual(self.problems(), [])
 
+    def test_the_terms_stay_out_until_they_are_reviewed(self):
+        self.assertNotIn("terms", check_site.GROUPS)
+
     def test_a_missing_page_is_reported(self):
-        (self.root / "terms-pt-BR.html").unlink()
-        self.assertTrue(any("terms-pt-BR.html: missing" in p for p in self.problems()))
+        (self.root / "privacy-policy-pt-BR.html").unlink()
+        self.assertTrue(any("privacy-policy-pt-BR.html: missing" in p for p in self.problems()))
 
     def test_leftover_placeholders_are_reported(self):
-        self.edit("terms-en.html", "<body>", "<body>Effective [[EFFECTIVE_DATE]]")
+        self.edit("support-en.html", "<body>", "<body>Effective [[EFFECTIVE_DATE]]")
         self.assertTrue(any("[[EFFECTIVE_DATE]]" in p for p in self.problems()))
 
     def test_the_old_address_is_reported(self):
@@ -79,7 +82,7 @@ class OfflineTests(unittest.TestCase):
         self.assertTrue(any("x-default" in p for p in self.problems()))
 
     def test_a_wrong_html_lang_is_reported(self):
-        self.edit("terms-es-MX.html", 'lang="es-MX"', 'lang="en-US"')
+        self.edit("privacy-policy-es-MX.html", 'lang="es-MX"', 'lang="en-US"')
         self.assertTrue(any("html lang should be es-MX" in p for p in self.problems()))
 
     def test_support_pages_need_the_contact_email(self):
@@ -91,8 +94,8 @@ class OfflineTests(unittest.TestCase):
         self.assertTrue(any("gone.html" in p for p in self.problems()))
 
     def test_a_page_missing_from_the_sitemap_is_reported(self):
-        self.edit("sitemap.xml", f"<url><loc>{BASE}terms-en.html</loc></url>", "")
-        self.assertTrue(any("does not list terms-en.html" in p for p in self.problems()))
+        self.edit("sitemap.xml", f"<url><loc>{BASE}support-en.html</loc></url>", "")
+        self.assertTrue(any("does not list support-en.html" in p for p in self.problems()))
 
     def test_missing_open_graph_tags_are_reported(self):
         self.edit("support-en.html", '<meta property="og:image"', '<meta property="x:image"')
