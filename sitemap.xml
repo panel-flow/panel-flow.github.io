@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://panel-flow.github.io/</loc>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/privacy-policy-en.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/privacy-policy-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/privacy-policy-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/privacy-policy-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/privacy-policy-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/privacy-policy-es-MX.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/privacy-policy-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/privacy-policy-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/privacy-policy-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/privacy-policy-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/privacy-policy-pt-BR.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/privacy-policy-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/privacy-policy-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/privacy-policy-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/privacy-policy-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/terms-en.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/terms-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/terms-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/terms-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/terms-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/terms-es-MX.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/terms-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/terms-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/terms-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/terms-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/terms-pt-BR.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/terms-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/terms-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/terms-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/terms-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/support-en.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/support-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/support-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/support-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/support-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/support-es-MX.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/support-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/support-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/support-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/support-en.html"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/support-pt-BR.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/support-en.html"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/support-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/support-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/support-en.html"/>
+  </url>
+</urlset>
