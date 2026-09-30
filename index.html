@@ -401,7 +401,7 @@
 <footer>
   <div class="container">
     <p>&copy; 2025 Panel Flow. <span data-i18n="footer">Todos os direitos reservados.</span></p>
-    <p style="margin-top:8px"><a href="privacy.html" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''" data-i18n="footer_privacy">Privacidade &amp; Contato</a></p>
+    <nav aria-label="Legal" style="margin-top:8px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px"><a href="privacy-policy-pt-BR.html" data-legal="privacy-policy" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''" data-i18n="footer_privacy">Política de Privacidade</a><a href="terms-pt-BR.html" data-legal="terms" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''" data-i18n="footer_terms">Termos de Uso</a><a href="support-pt-BR.html" data-legal="support" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''" data-i18n="footer_support">Suporte</a></nav>
   </div>
 </footer>
 
@@ -523,7 +523,7 @@ const translations = {
     fmt_desc:"Importe quadrinhos e mangás de qualquer formato popular. O Panel Flow cuida do resto.",fmt_zip:"Arquivo genérico",
     tech_label:"Tecnologia",tech_title:"Construído com o melhor do iOS",tech_persist:"Persistência",tech_security:"Segurança",
     cta_label:"Comece agora",cta_title:"Sua biblioteca merece",cta_title2:"um leitor inteligente.",
-    cta_desc:"Disponível para iPhone e iPad com iOS 26+. Baixe gratuitamente na App Store.",footer:"Todos os direitos reservados.",footer_privacy:"Privacidade & Contato"
+    cta_desc:"Disponível para iPhone e iPad com iOS 26+. Baixe gratuitamente na App Store.",footer:"Todos os direitos reservados.",footer_privacy:"Política de Privacidade",footer_terms:"Termos de Uso",footer_support:"Suporte"
   },
   en: {
     nav_features:"Features",nav_reader:"Reader",nav_ai:"Intelligence",nav_formats:"Formats",
@@ -551,7 +551,7 @@ const translations = {
     fmt_desc:"Import comics and manga from any popular format. Panel Flow takes care of the rest.",fmt_zip:"Generic archive",
     tech_label:"Technology",tech_title:"Built with the best of iOS",tech_persist:"Persistence",tech_security:"Security",
     cta_label:"Get started",cta_title:"Your library deserves",cta_title2:"a smart reader.",
-    cta_desc:"Available for iPhone and iPad with iOS 26+. Download free on the App Store.",footer:"All rights reserved.",footer_privacy:"Privacy & Contact"
+    cta_desc:"Available for iPhone and iPad with iOS 26+. Download free on the App Store.",footer:"All rights reserved.",footer_privacy:"Privacy Policy",footer_terms:"Terms of Use",footer_support:"Support"
   },
   es: {
     nav_features:"Funciones",nav_reader:"Lector",nav_ai:"Inteligencia",nav_formats:"Formatos",
@@ -579,7 +579,7 @@ const translations = {
     fmt_desc:"Importa cómics y manga de cualquier formato popular. Panel Flow se encarga del resto.",fmt_zip:"Archivo genérico",
     tech_label:"Tecnología",tech_title:"Construido con lo mejor de iOS",tech_persist:"Persistencia",tech_security:"Seguridad",
     cta_label:"Empieza ahora",cta_title:"Tu biblioteca merece",cta_title2:"un lector inteligente.",
-    cta_desc:"Disponible para iPhone y iPad con iOS 26+. Descarga gratis en la App Store.",footer:"Todos los derechos reservados.",footer_privacy:"Privacidad y Contacto"
+    cta_desc:"Disponible para iPhone y iPad con iOS 26+. Descarga gratis en la App Store.",footer:"Todos los derechos reservados.",footer_privacy:"Política de privacidad",footer_terms:"Términos de uso",footer_support:"Soporte"
   }
 };
 
@@ -593,6 +593,8 @@ function setLanguage(lang) {
     if (t[key]) el.textContent = t[key];
   });
   document.documentElement.lang = {pt:"pt-BR",en:"en",es:"es"}[lang];
+  const legalLang = {pt:"pt-BR",en:"en",es:"es-MX"}[lang];
+  document.querySelectorAll("[data-legal]").forEach(a => { a.href = a.dataset.legal + "-" + legalLang + ".html"; });
   document.querySelectorAll(".lang-btn").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.lang === lang);
   });
