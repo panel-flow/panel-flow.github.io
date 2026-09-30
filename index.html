@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Flow — Smart Comic & Manga Reader</title>
+  <meta name="description" content="Panel Flow: AI-powered comic and manga reader for iOS. Smart panel detection, guided reading, text-to-speech, and translation.">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --accent:#E8566C;--accent-light:#FF7A8A;--accent-glow:rgba(232,86,108,0.3);
+      --bg-primary:#0A0A0C;--bg-secondary:#111115;--bg-card:#18181D;--bg-card-hover:#1F1F26;
+      --text-primary:#F0F0F2;--text-secondary:#9A9AA8;--text-muted:#5A5A6E;
+      --border:rgba(255,255,255,0.06);--radius:16px;--radius-sm:10px;
+      --transition:0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img,video{max-width:100%;display:block}
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    .section{padding:100px 0}
+    .section-label{display:inline-block;font-size:0.75rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+    .section-title{font-size:clamp(2rem,5vw,3rem);font-weight:800;line-height:1.15;margin-bottom:20px;letter-spacing:-0.02em}
+    .section-subtitle{font-size:clamp(1rem,2.5vw,1.2rem);color:var(--text-secondary);max-width:600px;line-height:1.7}
+    .gradient-text{background:linear-gradient(135deg,var(--accent-light),var(--accent),#C44DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;background:rgba(10,10,12,0.8);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+    nav .container{display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.15rem}
+    .nav-logo svg{width:32px;height:32px}
+    .nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+    .nav-links a{font-size:0.875rem;font-weight:500;color:var(--text-secondary);transition:color var(--transition)}
+    .nav-links a:hover{color:var(--text-primary)}
+    .lang-switcher{display:flex;background:var(--bg-card);border-radius:100px;padding:3px;gap:2px;border:1px solid var(--border)}
+    .lang-btn{padding:6px 14px;border:none;border-radius:100px;font-size:0.8rem;font-weight:600;font-family:inherit;cursor:pointer;background:transparent;color:var(--text-muted);transition:all var(--transition)}
+    .lang-btn.active{background:var(--accent);color:white;box-shadow:0 2px 10px var(--accent-glow)}
+    .lang-btn:hover:not(.active){color:var(--text-primary)}
+    .nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:8px}
+    .nav-toggle span{display:block;width:22px;height:2px;background:var(--text-primary);margin:5px 0;border-radius:2px}
+
+    /* HERO */
+    .hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);pointer-events:none;opacity:0.5}
+    .hero .container{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+    .hero-content{position:relative;z-index:1}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(232,86,108,0.1);border:1px solid rgba(232,86,108,0.2);border-radius:100px;font-size:0.8rem;font-weight:600;color:var(--accent-light);margin-bottom:28px}
+    .hero-badge svg{width:16px;height:16px}
+    .hero-title{font-size:clamp(2.8rem,6vw,4.2rem);font-weight:900;line-height:1.08;letter-spacing:-0.03em;margin-bottom:24px}
+    .hero-desc{font-size:1.15rem;color:var(--text-secondary);line-height:1.7;margin-bottom:40px;max-width:480px}
+    .hero-actions{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+    .btn-primary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--accent);color:white;border-radius:14px;font-size:1rem;font-weight:600;transition:all var(--transition);border:none;cursor:pointer}
+    .btn-primary:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 8px 30px var(--accent-glow)}
+    .btn-primary svg{width:20px;height:20px}
+    .btn-secondary{display:inline-flex;align-items:center;gap:10px;padding:16px 32px;background:var(--bg-card);color:var(--text-primary);border-radius:14px;font-size:1rem;font-weight:600;border:1px solid var(--border);transition:all var(--transition);cursor:pointer}
+    .btn-secondary:hover{background:var(--bg-card-hover);transform:translateY(-2px)}
+    .hero-visual{position:relative;display:flex;justify-content:center;align-items:center}
+    .hero-phone{width:320px;border-radius:40px;box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 80px var(--accent-glow);position:relative;z-index:2}
+    .hero-phone-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(232,86,108,0.15),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);z-index:1}
+
+    /* FEATURES GRID */
+    .features-section{background:var(--bg-secondary)}
+    .features-header{text-align:center;margin-bottom:64px}
+    .features-header .section-subtitle{margin:0 auto}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .feature-card{background:var(--bg-card);border-radius:var(--radius);padding:32px;border:1px solid var(--border);transition:all var(--transition);overflow:hidden}
+    .feature-card:hover{border-color:rgba(232,86,108,0.2);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.3)}
+    .feature-icon{width:48px;height:48px;border-radius:12px;background:rgba(232,86,108,0.1);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+    .feature-icon svg{width:24px;height:24px;color:var(--accent)}
+    .feature-card h3{font-size:1.1rem;font-weight:700;margin-bottom:10px}
+    .feature-card p{font-size:0.9rem;color:var(--text-secondary);line-height:1.6}
+
+    /* SHOWCASE */
+    .showcase{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    .showcase.reverse{direction:rtl}
+    .showcase.reverse>*{direction:ltr}
+    .showcase-visual{position:relative;display:flex;justify-content:center}
+    .showcase-phone{width:300px;border-radius:32px;box-shadow:0 30px 60px rgba(0,0,0,0.4)}
+    .showcase-video-wrapper{position:relative;width:300px;border-radius:32px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,0.4)}
+    .showcase-video-wrapper video{width:100%;display:block;border-radius:32px}
+    .showcase-video-wrapper img{width:100%;display:block;border-radius:32px}
+
+    /* FORMATS */
+    .formats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:40px}
+    .format-pill{display:flex;align-items:center;gap:12px;padding:18px 24px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border);transition:all var(--transition)}
+    .format-pill:hover{border-color:rgba(232,86,108,0.2);background:var(--bg-card-hover)}
+    .format-pill .ext{font-weight:800;font-size:0.85rem;color:var(--accent);text-transform:uppercase;min-width:36px}
+    .format-pill .name{font-size:0.85rem;color:var(--text-secondary)}
+
+    /* STATS */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:60px 0}
+    .stat-item{text-align:center}
+    .stat-number{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-0.02em}
+    .stat-label{font-size:0.85rem;color:var(--text-secondary);margin-top:4px}
+
+    /* TECH */
+    .tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px}
+    .tech-item{display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border)}
+    .tech-item .tech-label{font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}
+    .tech-item .tech-value{font-weight:600;font-size:0.95rem}
+
+    /* CTA */
+    .cta-section{text-align:center;position:relative;overflow:hidden}
+    .cta-section::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);pointer-events:none;opacity:0.4}
+    .cta-section .section-title{max-width:700px;margin:0 auto 20px}
+    .cta-section .section-subtitle{margin:0 auto 40px}
+
+    /* FOOTER */
+    footer{padding:40px 0;border-top:1px solid var(--border);text-align:center}
+    footer p{font-size:0.85rem;color:var(--text-muted)}
+
+    /* ANIMATIONS */
+    .fade-up{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+    .fade-up.visible{opacity:1;transform:translateY(0)}
+
+    /* RESPONSIVE */
+    @media(max-width:968px){
+      .hero .container{grid-template-columns:1fr;text-align:center;gap:40px}
+      .hero-desc{margin-left:auto;margin-right:auto}
+      .hero-actions{justify-content:center}
+      .hero-phone{width:260px}
+      .features-grid{grid-template-columns:1fr 1fr}
+      .showcase{grid-template-columns:1fr;gap:40px;text-align:center}
+      .showcase.reverse{direction:ltr}
+      .showcase-visual{order:-1}
+      .showcase .section-subtitle{margin:0 auto}
+      .stats-bar{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:640px){
+      .section{padding:60px 0}
+      .features-grid{grid-template-columns:1fr}
+      .nav-links{display:none}
+      .nav-links.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:var(--bg-primary);padding:24px;border-bottom:1px solid var(--border);gap:20px}
+      .nav-toggle{display:block}
+      .hero-phone{width:220px}
+      .showcase-phone,.showcase-video-wrapper{width:240px}
+      .stats-bar{grid-template-columns:1fr 1fr;gap:32px}
+      .hero-actions{flex-direction:column;width:100%}
+      .btn-primary,.btn-secondary{width:100%;justify-content:center}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="https://apps.apple.com/br/app/panel-flow/id6755895197" class="nav-logo" target="_blank" rel="noopener">
+      <svg viewBox="0 0 1024 1024" style="border-radius:8px;flex-shrink:0;overflow:hidden"><defs><linearGradient id="navIconBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F27888"/><stop offset="100%" stop-color="#E8607A"/></linearGradient></defs><rect width="1024" height="1024" rx="224" fill="url(#navIconBg)"/><g transform="translate(280,220) rotate(-8,160,160)"><rect width="320" height="360" rx="40" fill="#FFB833" opacity="0.95"/></g><g transform="translate(430,160) rotate(5,160,160)"><rect width="340" height="370" rx="40" fill="#2BC9A2" opacity="0.92"/></g><g transform="translate(180,430) rotate(-3,180,180)"><rect width="360" height="360" rx="40" fill="#7C52E0" opacity="0.92"/></g><g transform="translate(430,420) rotate(3,180,180)"><rect width="380" height="380" rx="40" fill="#E84878" opacity="0.88"/></g></svg>
+      Panel Flow
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#features" data-i18n="nav_features">Recursos</a></li>
+      <li><a href="#reader" data-i18n="nav_reader">Leitor</a></li>
+      <li><a href="#ai" data-i18n="nav_ai">Inteligência</a></li>
+      <li><a href="#formats" data-i18n="nav_formats">Formatos</a></li>
+      <li>
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="pt">PT</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="es">ES</button>
+        </div>
+      </li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content fade-up">
+      <div class="hero-badge">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4.5L15 6l-3.5 3.5L12.5 15 8 12.5 3.5 15l1-5.5L1 6l5-0.5z"/></svg>
+        <span data-i18n="hero_badge">Impulsionado por IA</span>
+      </div>
+      <h1 class="hero-title">
+        <span data-i18n="hero_title_1">Leia quadrinhos</span><br>
+        <span class="gradient-text" data-i18n="hero_title_2">como nunca antes.</span>
+      </h1>
+      <p class="hero-desc" data-i18n="hero_desc">Panel Flow usa inteligência artificial para detectar painéis, ler balões em voz alta, traduzir conteúdo e guiar sua leitura — painel por painel.</p>
+      <div class="hero-actions">
+        <a href="https://apps.apple.com/br/app/panel-flow/id6755895197" class="btn-primary" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span data-i18n="hero_cta">Baixar na App Store</span>
+        </a>
+        <a href="#features" class="btn-secondary">
+          <span data-i18n="hero_cta2">Saiba mais</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7.8H7.8"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual fade-up">
+      <div class="hero-phone-glow"></div>
+      <img class="hero-phone" id="heroImg" alt="Panel Flow App">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES GRID -->
+<section class="section features-section" id="features">
+  <div class="container">
+    <div class="features-header fade-up">
+      <span class="section-label" data-i18n="feat_label">Recursos</span>
+      <h2 class="section-title" data-i18n="feat_title">Tudo para sua leitura perfeita</h2>
+      <p class="section-subtitle" data-i18n="feat_subtitle">Ferramentas inteligentes que transformam como você lê quadrinhos e mangás no seu iPhone e iPad.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3 data-i18n="f1_title">Detecção de Painéis</h3>
+        <p data-i18n="f1_desc">Machine learning identifica automaticamente cada painel na página, com ordenação inteligente para comics e mangás.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h3 data-i18n="f2_title">Balões de Fala & OCR</h3>
+        <p data-i18n="f2_desc">Detecta balões, extrai texto com OCR e identifica idiomas automaticamente para cada página.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+        <h3 data-i18n="f3_title">Text-to-Speech</h3>
+        <p data-i18n="f3_desc">Ouça seus quadrinhos em voz alta com Apple TTS ou vozes premium da OpenAI, com destaque sincronizado.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+        <h3 data-i18n="f4_title">Tradução Integrada</h3>
+        <p data-i18n="f4_desc">Traduza balões de fala em tempo real usando o framework Translation do iOS, com overlay sobre a página.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
+        <h3 data-i18n="f5_title">Biblioteca Completa</h3>
+        <p data-i18n="f5_desc">Organize sua coleção com busca, ordenação, metadados editáveis e seção "Continuar Lendo" inteligente.</p>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+        <h3 data-i18n="f6_title">Modo de Edição</h3>
+        <p data-i18n="f6_desc">Ajuste manualmente painéis e balões, edite textos de OCR e refine os resultados da detecção.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- READER -->
+<section class="section" id="reader">
+  <div class="container">
+    <div class="showcase fade-up">
+      <div class="showcase-visual">
+        <div class="showcase-video-wrapper">
+          <video autoplay muted loop playsinline id="readingVideo" poster="">
+            <source src="Reading-ptbr.mp4" type="video/mp4">
+          </video>
+          <img id="readingPoster" style="display:none" alt="Reading Mode">
+        </div>
+      </div>
+      <div>
+        <span class="section-label" data-i18n="read_label">Leitor</span>
+        <h2 class="section-title" data-i18n="read_title">Leitura fluida em cada formato</h2>
+        <p class="section-subtitle" data-i18n="read_desc">Navegação horizontal para comics e mangás, ou scroll vertical contínuo para webtoons. Zoom suave, fundo adaptativo com gradiente e lazy loading para performance máxima.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI -->
+<section class="section features-section" id="ai">
+  <div class="container">
+    <div class="showcase reverse fade-up">
+      <div class="showcase-visual">
+        <img class="showcase-phone" id="aiImg" alt="Guided Reading Mode">
+      </div>
+      <div>
+        <span class="section-label" data-i18n="ai_label">Inteligência Artificial</span>
+        <h2 class="section-title" data-i18n="ai_title">Leitura guiada, painel por painel</h2>
+        <p class="section-subtitle" data-i18n="ai_desc">O modo guiado usa machine learning para navegar automaticamente entre painéis com zoom e animações suaves. Toque na tela para avançar — é como ter um guia pessoal para cada página.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSLATION -->
+<section class="section">
+  <div class="container">
+    <div class="showcase fade-up">
+      <div class="showcase-visual">
+        <img class="showcase-phone" id="transImg" alt="Translation Feature">
+      </div>
+      <div>
+        <span class="section-label" data-i18n="trans_label">Tradução</span>
+        <h2 class="section-title" data-i18n="trans_title">Leia em qualquer idioma</h2>
+        <p class="section-subtitle" data-i18n="trans_desc">Tradução automática dos balões de fala diretamente sobre a página. Detecta o idioma original ou deixe você escolher — leia mangás e quadrinhos sem barreiras.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUIDED MODE -->
+<section class="section features-section">
+  <div class="container">
+    <div class="showcase reverse fade-up">
+      <div class="showcase-visual">
+        <div class="showcase-video-wrapper">
+          <video autoplay muted loop playsinline id="guidedVideo" poster="">
+            <source src="Guided Mode.mp4" type="video/mp4">
+          </video>
+          <img id="guidedPoster" style="display:none" alt="Guided Mode">
+        </div>
+      </div>
+      <div>
+        <span class="section-label" data-i18n="guided_label">Modo Guiado</span>
+        <h2 class="section-title" data-i18n="guided_title">Zoom automático em cada painel</h2>
+        <p class="section-subtitle" data-i18n="guided_desc">Veja cada painel em detalhes com zoom automático e transições animadas. O app entende a direção de leitura — da esquerda para direita para comics, da direita para esquerda para mangás.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="container">
+    <div class="stats-bar fade-up">
+      <div class="stat-item"><div class="stat-number gradient-text">6+</div><div class="stat-label" data-i18n="stat1">Formatos suportados</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">3</div><div class="stat-label" data-i18n="stat2">Direções de leitura</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">2</div><div class="stat-label" data-i18n="stat3">Motores de TTS</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">100%</div><div class="stat-label" data-i18n="stat4">Acessível (VoiceOver)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMATS -->
+<section class="section features-section" id="formats">
+  <div class="container fade-up">
+    <span class="section-label" data-i18n="fmt_label">Compatibilidade</span>
+    <h2 class="section-title" data-i18n="fmt_title">Seus arquivos, sem limitações</h2>
+    <p class="section-subtitle" data-i18n="fmt_desc">Importe quadrinhos e mangás de qualquer formato popular. O Panel Flow cuida do resto.</p>
+    <div class="formats-grid">
+      <div class="format-pill"><span class="ext">CBZ</span><span class="name">Comic Book ZIP</span></div>
+      <div class="format-pill"><span class="ext">CBR</span><span class="name">Comic Book RAR</span></div>
+      <div class="format-pill"><span class="ext">CB7</span><span class="name">Comic Book 7-Zip</span></div>
+      <div class="format-pill"><span class="ext">CBT</span><span class="name">Comic Book TAR</span></div>
+      <div class="format-pill"><span class="ext">PDF</span><span class="name">Portable Document</span></div>
+      <div class="format-pill"><span class="ext">ZIP</span><span class="name" data-i18n="fmt_zip">Arquivo genérico</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section class="section">
+  <div class="container fade-up">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="section-label" data-i18n="tech_label">Tecnologia</span>
+      <h2 class="section-title" data-i18n="tech_title">Construído com o melhor do iOS</h2>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-item"><div><div class="tech-label">UI</div><div class="tech-value">SwiftUI · Liquid Glass</div></div></div>
+      <div class="tech-item"><div><div class="tech-label" data-i18n="tech_persist">Persistência</div><div class="tech-value">SwiftData</div></div></div>
+      <div class="tech-item"><div><div class="tech-label">Machine Learning</div><div class="tech-value">Vision · CoreML</div></div></div>
+      <div class="tech-item"><div><div class="tech-label">Text-to-Speech</div><div class="tech-value">AVSpeech · OpenAI</div></div></div>
+      <div class="tech-item"><div><div class="tech-label" data-i18n="tech_security">Segurança</div><div class="tech-value">Keychain</div></div></div>
+      <div class="tech-item"><div><div class="tech-label">Tracking</div><div class="tech-value">MyAnimeList · AniList</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta-section">
+  <div class="container fade-up">
+    <span class="section-label" data-i18n="cta_label">Comece agora</span>
+    <h2 class="section-title" data-i18n="cta_title">Sua biblioteca merece<br><span class="gradient-text" data-i18n="cta_title2">um leitor inteligente.</span></h2>
+    <p class="section-subtitle" data-i18n="cta_desc">Disponível para iPhone e iPad com iOS 26+. Baixe gratuitamente na App Store.</p>
+    <div style="margin-top:40px">
+      <a href="https://apps.apple.com/br/app/panel-flow/id6755895197" class="btn-primary" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+        <span data-i18n="hero_cta">Baixar na App Store</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>&copy; 2025 Panel Flow. <span data-i18n="footer">Todos os direitos reservados.</span></p>
+    <p style="margin-top:8px"><a href="privacy.html" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''" data-i18n="footer_privacy">Privacidade &amp; Contato</a></p>
+  </div>
+</footer>
+
+<script>
+const ASSETS = {
+  "screenshot_1-ptbr.png": "img/screenshot_1-ptbr.webp",
+  "screenshot_1-en.png": "img/screenshot_1-en.webp",
+  "screenshot_1-es.png": "img/screenshot_1-es.webp",
+  "screenshot_2-ptbr.jpg": "img/screenshot_2-ptbr.webp",
+  "screenshot_2-en.jpg": "img/screenshot_2-en.webp",
+  "screenshot_2-es.jpg": "img/screenshot_2-es.webp",
+  "screenshot_3-ptbr.jpg": "img/screenshot_3-ptbr.webp",
+  "screenshot_3-en.jpg": "img/screenshot_3-en.webp",
+  "poster_reading_ptbr": "img/poster_reading_ptbr.webp",
+  "poster_reading_en": "img/poster_reading_en.webp",
+  "poster_reading_es": "img/poster_reading_es.webp",
+  "poster_guided": "img/poster_guided.webp"
+};
+
+
+// Image mapping per language
+const imgMap = {
+  heroImg: { pt: "screenshot_1-ptbr.png", en: "screenshot_1-en.png", es: "screenshot_1-es.png" },
+  aiImg: { pt: "screenshot_2-ptbr.jpg", en: "screenshot_2-en.jpg", es: "screenshot_2-es.jpg" },
+  transImg: { pt: "screenshot_3-ptbr.jpg", en: "screenshot_3-en.jpg", es: "screenshot_3-en.jpg" }
+};
+
+const videoMap = {
+  readingVideo: { pt: "Reading-ptbr.mp4", en: "Reading-en.mp4", es: "Reading-es.mp4" },
+};
+
+const posterMap = {
+  readingPoster: { pt: "poster_reading_ptbr", en: "poster_reading_en", es: "poster_reading_es" },
+  guidedPoster: { pt: "poster_guided", en: "poster_guided", es: "poster_guided" }
+};
+
+// Set initial images
+function applyImages(lang) {
+  for (const [id, map] of Object.entries(imgMap)) {
+    const el = document.getElementById(id);
+    if (el) {
+      const key = map[lang];
+      el.src = ASSETS[key] || key;
+    }
+  }
+  // Videos: try to play, fall back to poster
+  for (const [id, map] of Object.entries(videoMap)) {
+    const el = document.getElementById(id);
+    if (el) {
+      const src = map[lang];
+      el.querySelector("source").src = src;
+      el.load();
+      el.play().catch(() => {});
+    }
+  }
+  // Set poster images for videos (in case video doesn't load)
+  for (const [id, map] of Object.entries(posterMap)) {
+    const el = document.getElementById(id);
+    const videoEl = id === "readingPoster" ? document.getElementById("readingVideo") : document.getElementById("guidedVideo");
+    if (el && videoEl) {
+      const key = map[lang];
+      const posterSrc = ASSETS[key] || "";
+      videoEl.poster = posterSrc;
+      // Show poster img if video can't play
+      videoEl.addEventListener("error", () => {
+        el.src = posterSrc;
+        el.style.display = "block";
+        videoEl.style.display = "none";
+      }, { once: true });
+    }
+  }
+  // Also set guided video poster
+  const guidedVid = document.getElementById("guidedVideo");
+  if (guidedVid) {
+    guidedVid.poster = ASSETS["poster_guided"] || "";
+  }
+}
+
+// Check if videos can actually play
+function checkVideoFallback() {
+  document.querySelectorAll("video").forEach(v => {
+    v.play().catch(() => {
+      // Video can't play - show poster as image
+      const wrapper = v.parentElement;
+      const posterImg = wrapper.querySelector("img");
+      if (posterImg && v.poster) {
+        posterImg.src = v.poster;
+        posterImg.style.display = "block";
+        v.style.display = "none";
+      }
+    });
+  });
+}
+
+const translations = {
+  pt: {
+    nav_features:"Recursos",nav_reader:"Leitor",nav_ai:"Inteligência",nav_formats:"Formatos",
+    hero_badge:"Impulsionado por IA",hero_title_1:"Leia quadrinhos",hero_title_2:"como nunca antes.",
+    hero_desc:"Panel Flow usa inteligência artificial para detectar painéis, ler balões em voz alta, traduzir conteúdo e guiar sua leitura — painel por painel.",
+    hero_cta:"Baixar na App Store",hero_cta2:"Saiba mais",
+    feat_label:"Recursos",feat_title:"Tudo para sua leitura perfeita",
+    feat_subtitle:"Ferramentas inteligentes que transformam como você lê quadrinhos e mangás no seu iPhone e iPad.",
+    f1_title:"Detecção de Painéis",f1_desc:"Machine learning identifica automaticamente cada painel na página, com ordenação inteligente para comics e mangás.",
+    f2_title:"Balões de Fala & OCR",f2_desc:"Detecta balões, extrai texto com OCR e identifica idiomas automaticamente para cada página.",
+    f3_title:"Text-to-Speech",f3_desc:"Ouça seus quadrinhos em voz alta com Apple TTS ou vozes premium da OpenAI, com destaque sincronizado.",
+    f4_title:"Tradução Integrada",f4_desc:"Traduza balões de fala em tempo real usando o framework Translation do iOS, com overlay sobre a página.",
+    f5_title:"Biblioteca Completa",f5_desc:"Organize sua coleção com busca, ordenação, metadados editáveis e seção \"Continuar Lendo\" inteligente.",
+    f6_title:"Modo de Edição",f6_desc:"Ajuste manualmente painéis e balões, edite textos de OCR e refine os resultados da detecção.",
+    read_label:"Leitor",read_title:"Leitura fluida em cada formato",
+    read_desc:"Navegação horizontal para comics e mangás, ou scroll vertical contínuo para webtoons. Zoom suave, fundo adaptativo com gradiente e lazy loading para performance máxima.",
+    ai_label:"Inteligência Artificial",ai_title:"Leitura guiada, painel por painel",
+    ai_desc:"O modo guiado usa machine learning para navegar automaticamente entre painéis com zoom e animações suaves. Toque na tela para avançar — é como ter um guia pessoal para cada página.",
+    trans_label:"Tradução",trans_title:"Leia em qualquer idioma",
+    trans_desc:"Tradução automática dos balões de fala diretamente sobre a página. Detecta o idioma original ou deixe você escolher — leia mangás e quadrinhos sem barreiras.",
+    guided_label:"Modo Guiado",guided_title:"Zoom automático em cada painel",
+    guided_desc:"Veja cada painel em detalhes com zoom automático e transições animadas. O app entende a direção de leitura — da esquerda para direita para comics, da direita para esquerda para mangás.",
+    stat1:"Formatos suportados",stat2:"Direções de leitura",stat3:"Motores de TTS",stat4:"Acessível (VoiceOver)",
+    fmt_label:"Compatibilidade",fmt_title:"Seus arquivos, sem limitações",
+    fmt_desc:"Importe quadrinhos e mangás de qualquer formato popular. O Panel Flow cuida do resto.",fmt_zip:"Arquivo genérico",
+    tech_label:"Tecnologia",tech_title:"Construído com o melhor do iOS",tech_persist:"Persistência",tech_security:"Segurança",
+    cta_label:"Comece agora",cta_title:"Sua biblioteca merece",cta_title2:"um leitor inteligente.",
+    cta_desc:"Disponível para iPhone e iPad com iOS 26+. Baixe gratuitamente na App Store.",footer:"Todos os direitos reservados.",footer_privacy:"Privacidade & Contato"
+  },
+  en: {
+    nav_features:"Features",nav_reader:"Reader",nav_ai:"Intelligence",nav_formats:"Formats",
+    hero_badge:"AI-Powered",hero_title_1:"Read comics",hero_title_2:"like never before.",
+    hero_desc:"Panel Flow uses artificial intelligence to detect panels, read speech bubbles aloud, translate content, and guide your reading — panel by panel.",
+    hero_cta:"Download on App Store",hero_cta2:"Learn more",
+    feat_label:"Features",feat_title:"Everything for your perfect read",
+    feat_subtitle:"Smart tools that transform how you read comics and manga on your iPhone and iPad.",
+    f1_title:"Panel Detection",f1_desc:"Machine learning automatically identifies each panel on the page, with smart ordering for comics and manga.",
+    f2_title:"Speech Bubbles & OCR",f2_desc:"Detects bubbles, extracts text with OCR, and automatically identifies languages for each page.",
+    f3_title:"Text-to-Speech",f3_desc:"Listen to your comics read aloud with Apple TTS or premium OpenAI voices, with synchronized highlighting.",
+    f4_title:"Built-in Translation",f4_desc:"Translate speech bubbles in real time using the iOS Translation framework, with overlay right on the page.",
+    f5_title:"Complete Library",f5_desc:"Organize your collection with search, sorting, editable metadata, and a smart \"Continue Reading\" section.",
+    f6_title:"Edit Mode",f6_desc:"Manually adjust panels and bubbles, edit OCR text, and refine detection results.",
+    read_label:"Reader",read_title:"Smooth reading in every format",
+    read_desc:"Horizontal navigation for comics and manga, or continuous vertical scroll for webtoons. Smooth zoom, adaptive gradient background, and lazy loading for maximum performance.",
+    ai_label:"Artificial Intelligence",ai_title:"Guided reading, panel by panel",
+    ai_desc:"Guided mode uses machine learning to automatically navigate between panels with zoom and smooth animations. Tap the screen to advance — it's like having a personal guide for each page.",
+    trans_label:"Translation",trans_title:"Read in any language",
+    trans_desc:"Automatic speech bubble translation right on the page. Detects the original language or lets you choose — read manga and comics without barriers.",
+    guided_label:"Guided Mode",guided_title:"Auto-zoom on every panel",
+    guided_desc:"See every panel in detail with automatic zoom and animated transitions. The app understands reading direction — left to right for comics, right to left for manga.",
+    stat1:"Supported formats",stat2:"Reading directions",stat3:"TTS engines",stat4:"Accessible (VoiceOver)",
+    fmt_label:"Compatibility",fmt_title:"Your files, no limitations",
+    fmt_desc:"Import comics and manga from any popular format. Panel Flow takes care of the rest.",fmt_zip:"Generic archive",
+    tech_label:"Technology",tech_title:"Built with the best of iOS",tech_persist:"Persistence",tech_security:"Security",
+    cta_label:"Get started",cta_title:"Your library deserves",cta_title2:"a smart reader.",
+    cta_desc:"Available for iPhone and iPad with iOS 26+. Download free on the App Store.",footer:"All rights reserved.",footer_privacy:"Privacy & Contact"
+  },
+  es: {
+    nav_features:"Funciones",nav_reader:"Lector",nav_ai:"Inteligencia",nav_formats:"Formatos",
+    hero_badge:"Impulsado por IA",hero_title_1:"Lee cómics",hero_title_2:"como nunca antes.",
+    hero_desc:"Panel Flow usa inteligencia artificial para detectar paneles, leer globos en voz alta, traducir contenido y guiar tu lectura — panel por panel.",
+    hero_cta:"Descargar en App Store",hero_cta2:"Saber más",
+    feat_label:"Funciones",feat_title:"Todo para tu lectura perfecta",
+    feat_subtitle:"Herramientas inteligentes que transforman cómo lees cómics y manga en tu iPhone y iPad.",
+    f1_title:"Detección de Paneles",f1_desc:"Machine learning identifica automáticamente cada panel en la página, con ordenamiento inteligente para cómics y manga.",
+    f2_title:"Globos de Diálogo y OCR",f2_desc:"Detecta globos, extrae texto con OCR e identifica idiomas automáticamente para cada página.",
+    f3_title:"Text-to-Speech",f3_desc:"Escucha tus cómics en voz alta con Apple TTS o voces premium de OpenAI, con resaltado sincronizado.",
+    f4_title:"Traducción Integrada",f4_desc:"Traduce globos de diálogo en tiempo real usando el framework Translation de iOS, con overlay sobre la página.",
+    f5_title:"Biblioteca Completa",f5_desc:"Organiza tu colección con búsqueda, ordenamiento, metadatos editables y sección \"Seguir Leyendo\" inteligente.",
+    f6_title:"Modo de Edición",f6_desc:"Ajusta manualmente paneles y globos, edita textos de OCR y refina los resultados de la detección.",
+    read_label:"Lector",read_title:"Lectura fluida en cada formato",
+    read_desc:"Navegación horizontal para cómics y manga, o scroll vertical continuo para webtoons. Zoom suave, fondo adaptativo con gradiente y lazy loading para máximo rendimiento.",
+    ai_label:"Inteligencia Artificial",ai_title:"Lectura guiada, panel por panel",
+    ai_desc:"El modo guiado usa machine learning para navegar automáticamente entre paneles con zoom y animaciones suaves. Toca la pantalla para avanzar — es como tener un guía personal para cada página.",
+    trans_label:"Traducción",trans_title:"Lee en cualquier idioma",
+    trans_desc:"Traducción automática de los globos de diálogo directamente sobre la página. Detecta el idioma original o te deja elegir — lee manga y cómics sin barreras.",
+    guided_label:"Modo Guiado",guided_title:"Zoom automático en cada panel",
+    guided_desc:"Ve cada panel en detalle con zoom automático y transiciones animadas. La app entiende la dirección de lectura — de izquierda a derecha para cómics, de derecha a izquierda para manga.",
+    stat1:"Formatos soportados",stat2:"Direcciones de lectura",stat3:"Motores de TTS",stat4:"Accesible (VoiceOver)",
+    fmt_label:"Compatibilidad",fmt_title:"Tus archivos, sin limitaciones",
+    fmt_desc:"Importa cómics y manga de cualquier formato popular. Panel Flow se encarga del resto.",fmt_zip:"Archivo genérico",
+    tech_label:"Tecnología",tech_title:"Construido con lo mejor de iOS",tech_persist:"Persistencia",tech_security:"Seguridad",
+    cta_label:"Empieza ahora",cta_title:"Tu biblioteca merece",cta_title2:"un lector inteligente.",
+    cta_desc:"Disponible para iPhone y iPad con iOS 26+. Descarga gratis en la App Store.",footer:"Todos los derechos reservados.",footer_privacy:"Privacidad y Contacto"
+  }
+};
+
+let currentLang = "pt";
+
+function setLanguage(lang) {
+  currentLang = lang;
+  const t = translations[lang];
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (t[key]) el.textContent = t[key];
+  });
+  document.documentElement.lang = {pt:"pt-BR",en:"en",es:"es"}[lang];
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === lang);
+  });
+  applyImages(lang);
+}
+
+document.querySelectorAll(".lang-btn").forEach(btn => {
+  btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+});
+
+document.getElementById("navToggle").addEventListener("click", () => {
+  document.getElementById("navLinks").classList.toggle("open");
+});
+document.querySelectorAll(".nav-links a").forEach(a => {
+  a.addEventListener("click", () => document.getElementById("navLinks").classList.remove("open"));
+});
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+}, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+document.querySelectorAll(".fade-up").forEach(el => observer.observe(el));
+
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener("click", e => {
+    const href = a.getAttribute("href");
+    if (href && href.length > 1) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+});
+
+// Init
+applyImages("pt");
+setTimeout(checkVideoFallback, 1000);
+</script>
+</body>
+</html>

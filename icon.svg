@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F27888"/>
+      <stop offset="100%" stop-color="#E8607A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+  <!-- Orange panel - top left, slight tilt -->
+  <g transform="translate(280, 220) rotate(-8, 160, 160)">
+    <rect width="320" height="360" rx="40" fill="#FFB833" opacity="0.95"/>
+  </g>
+  <!-- Teal panel - top right -->
+  <g transform="translate(430, 160) rotate(5, 160, 160)">
+    <rect width="340" height="370" rx="40" fill="#2BC9A2" opacity="0.92"/>
+  </g>
+  <!-- Purple panel - bottom left -->
+  <g transform="translate(180, 430) rotate(-3, 180, 180)">
+    <rect width="360" height="360" rx="40" fill="#7C52E0" opacity="0.92"/>
+  </g>
+  <!-- Pink panel - bottom right -->
+  <g transform="translate(430, 420) rotate(3, 180, 180)">
+    <rect width="380" height="380" rx="40" fill="#E84878" opacity="0.88"/>
+  </g>
+</svg>
