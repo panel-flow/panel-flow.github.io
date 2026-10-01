@@ -34,6 +34,9 @@ def build_site(root, base=BASE):
     (root / "index.html").write_text(
         f'<html><head><link rel="canonical" href="{base}"><script type="application/ld+json">{{}}</script></head>'
         '<body><a href="privacy-policy-en.html">p</a></body></html>', encoding="utf-8")
+    for file in check_site.LANDING.values():
+        if file != "index.html":
+            (root / file).write_text(f'<html><head><link rel="canonical" href="{base}{file}"></head><body>l</body></html>', encoding="utf-8")
     entries = "".join(f"<url><loc>{base}{p}</loc></url>" for p in check_site.PAGES)
     (root / "sitemap.xml").write_text(f"<urlset>{entries}</urlset>", encoding="utf-8")
     (root / "robots.txt").write_text(f"User-agent: *\nSitemap: {base}sitemap.xml\n", encoding="utf-8")
@@ -47,7 +50,7 @@ class OfflineTests(unittest.TestCase):
         build_site(self.root)
 
     def problems(self):
-        return check_site.check_offline(self.root, BASE)
+        return check_site.check_offline(self.root, BASE, landing=False)  # the synthetic site has no landing sources
 
     def edit(self, name, old, new):
         path = self.root / name
@@ -99,6 +102,87 @@ class OfflineTests(unittest.TestCase):
         self.assertTrue(any("og:image is missing" in p for p in self.problems()))
 
 
+class LandingCheckTests(unittest.TestCase):
+    """check_offline with the landing checks, on a copy of the real site: it must pass, and each defect must be named."""
+
+    def setUp(self):
+        import shutil
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        repo = Path(__file__).resolve().parent.parent
+        shutil.copytree(repo, self.root, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".git", "__pycache__", "_drafts"))
+        self.base = check_site.DEFAULT_BASE
+
+    def problems(self):
+        return check_site.check_offline(self.root, self.base)
+
+    def edit(self, name, old, new, count=1):
+        path = self.root / name
+        text = path.read_text(encoding="utf-8")
+        self.assertIn(old, text)
+        path.write_text(text.replace(old, new, count), encoding="utf-8")
+
+    def has(self, fragment):
+        problems = self.problems()
+        self.assertTrue(any(fragment in p for p in problems), problems)
+
+    def test_the_real_site_passes(self):
+        self.assertEqual(self.problems(), [])
+
+    def test_the_landing_pages_are_checked_against_the_build(self):
+        self.edit("index.html", "</body>", "<!-- by hand --></body>")
+        self.has("index.html: differs from what _src/ builds")
+
+    def test_each_page_defect_is_named(self):
+        # the page is edited by hand, so the build check also fires; each message must still be there
+        cases = [
+            ("index-pt-BR.html", '<html lang="pt-BR"', '<html lang="en"', "html lang should be pt-BR"),
+            ("index-pt-BR.html", '<link rel="canonical" href="https://panel-flow.github.io/index-pt-BR.html">',
+             '<link rel="canonical" href="https://panel-flow.github.io/">', "canonical link should be"),
+            ("index.html", 'hreflang="x-default" href="https://panel-flow.github.io/"', 'hreflang="x-default" href="https://panel-flow.github.io/index.html"',
+             "hreflang x-default is missing or wrong"),
+            ("index-es-MX.html", 'hreflang="pt-BR" href="https://panel-flow.github.io/index-pt-BR.html"', 'hreflang="pt-BR" href="x"',
+             "hreflang pt-BR is missing or wrong"),
+            ("index.html", "<h1 ", "<h1 ></h1><h1 ", "exactly one h1"),
+            ("index.html", "<body>", '<body><p data-i18n="x">x</p>', "leftover client-side translation"),
+            ("index.html", "<body>", "<body><video></video>", "a <video> is on the page"),
+            ("index.html", "<body>", '<body><nav aria-label="Legal"></nav>', "exactly one <nav> element"),
+            ("index.html", "<body>", '<body><img src="img/og-card.png" width="1" height="1">', "an <img> has no alt text"),
+            ("index.html", "<body>", '<body><img src="img/og-card.png" alt="x">', "has no width and height"),
+            ("index.html", '<meta property="og:url" content="https://panel-flow.github.io/">', "", "og:url should be"),
+            ("index.html", '"inLanguage": "en-US"', '"inLanguage": "pt-BR"', "structured data inLanguage should be en-US"),
+            ("index.html", '"url": "https://panel-flow.github.io/"', '"url": "https://x/"', "structured data url should be"),
+            ("index.html", "https://apps.apple.com/app/id6755895197", "https://example.com/", "the App Store link is missing", 99),
+            ("index.html", "<title>", "<tit>", "no <title>"),
+        ]
+        for name, old, new, message, *count in cases:
+            with self.subTest(message=message):
+                backup = (self.root / name).read_text(encoding="utf-8")
+                self.edit(name, old, new, *(count or [1]))
+                self.has(message)
+                (self.root / name).write_text(backup, encoding="utf-8")
+
+    def test_a_missing_landing_page_is_named(self):
+        (self.root / "index-es-MX.html").unlink()
+        self.has("index-es-MX.html: missing")
+
+    def test_the_sitemap_must_list_each_landing_page_with_its_alternates(self):
+        self.edit("sitemap.xml", "<loc>https://panel-flow.github.io/index-pt-BR.html</loc>", "<loc>https://panel-flow.github.io/index-pt-BR.htm</loc>")
+        self.has("does not list the landing page https://panel-flow.github.io/index-pt-BR.html")
+        self.edit("sitemap.xml", "<loc>https://panel-flow.github.io/index-pt-BR.htm</loc>", "<loc>https://panel-flow.github.io/index-pt-BR.html</loc>")
+        self.edit("sitemap.xml", '<xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/index-es-MX.html"/>', "", count=1)
+        self.has("lacks the alternate es-MX")
+
+    def test_the_sitemap_entry_needs_x_default(self):
+        self.edit("sitemap.xml", '<xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/"/>', "", count=1)
+        self.has("lacks x-default")
+
+    def test_the_landing_is_still_checked_by_the_generic_rules(self):
+        self.edit("index.html", "</body>", '<a href="https://sciasxp.github.io/x">old</a></body>')
+        self.has("index.html: still references the old address")
+
+
 class LiveTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -122,6 +206,14 @@ class LiveTests(unittest.TestCase):
     def test_a_page_that_is_not_served_is_reported(self):
         (self.root / "support-en.html").unlink()
         self.assertTrue(any("support-en.html" in p and "404" in p for p in check_site.check_live(self.base)))
+
+    def test_the_landing_pages_must_be_served_with_their_own_canonical(self):
+        (self.root / "index-pt-BR.html").unlink()
+        self.assertTrue(any("index-pt-BR.html" in p and "404" in p for p in check_site.check_live(self.base)))
+        (self.root / "index-pt-BR.html").write_text(f'<html><head><link rel="canonical" href="{self.base}">x</head></html>', encoding="utf-8")
+        self.assertTrue(any("index-pt-BR.html: the served page has a different canonical link" in p for p in check_site.check_live(self.base)))
+        (self.root / "index.html").write_text('<html><head><link rel="canonical" href="https://x/"></head></html>', encoding="utf-8")
+        self.assertIn(f"{self.base}: the served page has a different canonical link", check_site.check_live(self.base))
 
     def test_a_served_support_page_without_the_email_is_reported(self):
         path = self.root / "support-en.html"

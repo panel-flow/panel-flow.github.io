@@ -1,0 +1,50 @@
+{
+ "poster_guided.webp": [
+  600,
+  1300
+ ],
+ "poster_reading_en.webp": [
+  600,
+  1300
+ ],
+ "poster_reading_es.webp": [
+  600,
+  1300
+ ],
+ "poster_reading_ptbr.webp": [
+  600,
+  1300
+ ],
+ "screenshot_1-en.webp": [
+  640,
+  1384
+ ],
+ "screenshot_1-es.webp": [
+  640,
+  1384
+ ],
+ "screenshot_1-ptbr.webp": [
+  640,
+  1384
+ ],
+ "screenshot_2-en.webp": [
+  640,
+  1384
+ ],
+ "screenshot_2-es.webp": [
+  640,
+  1384
+ ],
+ "screenshot_2-ptbr.webp": [
+  640,
+  1384
+ ],
+ "screenshot_3-en.webp": [
+  640,
+  1384
+ ],
+ "screenshot_3-ptbr.webp": [
+  640,
+  1384
+ ]
+}
