@@ -6,11 +6,14 @@
 Offline (default), run from anywhere: reads the HTML files of the repository and checks the nine pages the app links to
 (privacy-policy-, terms- and support- plus en, es-MX or pt-BR), the canonical and hreflang links, Open Graph tags, local
 links and images, leftover [[PLACEHOLDER]] markers, references to the old address, the contact email on the support
-pages, the sitemap and robots.txt. Prints one line per problem and `PASS` or `FAIL`; exit code 1 on FAIL.
+pages, the three generated landing pages (see build-landing.py: they must equal what _src/ builds, one h1, hreflang, canonical, alt and
+size on every image, no leftover i18n), the sitemap and robots.txt. Prints one line per problem and `PASS` or `FAIL`; exit code 1 on FAIL.
 
 --live also fetches the landing and the nine pages from --base (default https://panel-flow.github.io/) and expects HTTP 200
 plus the expected canonical link, and the contact email on the support pages.
 """
+import importlib.util
+import json
 import re
 import sys
 import urllib.request
@@ -25,7 +28,18 @@ LOCALES = {"en": "en-US", "es-MX": "es-MX", "pt-BR": "pt-BR"}
 PAGES = [f"{g}-{k}.html" for g in GROUPS for k in LOCALES]
 
 
-def check_offline(root=ROOT, base=DEFAULT_BASE):
+def _builder():
+    spec = importlib.util.spec_from_file_location("build_landing", Path(__file__).resolve().parent / "build-landing.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+BUILDER = _builder()
+LANDING = {tag: page["file"] for tag, page in BUILDER.PAGES.items()}  # tag -> file; en-US is the root
+
+
+def check_offline(root=ROOT, base=DEFAULT_BASE, landing=True):
     problems = []
 
     def add(where, message):
@@ -74,12 +88,15 @@ def check_offline(root=ROOT, base=DEFAULT_BASE):
     index = root / "index.html"
     if not index.is_file():
         add("index.html", "missing")
-    else:
+    elif not landing:
         text = index.read_text(encoding="utf-8")
         if f'<link rel="canonical" href="{base}">' not in text:
             add("index.html", f"canonical link should be {base}")
         if "application/ld+json" not in text:
             add("index.html", "structured data is missing")
+
+    if landing:
+        problems += check_landing(root, base)
 
     sitemap = root / "sitemap.xml"
     if not sitemap.is_file():
@@ -89,15 +106,91 @@ def check_offline(root=ROOT, base=DEFAULT_BASE):
         for page in PAGES:
             if f"<loc>{base}{page}</loc>" not in text:
                 add("sitemap.xml", f"does not list {page}")
+        if landing:
+            for tag, file in LANDING.items():
+                url = base if file == "index.html" else base + file
+                block = re.search(r"<url>\s*<loc>%s</loc>(.*?)</url>" % re.escape(url), text, re.S)
+                if not block:
+                    add("sitemap.xml", f"does not list the landing page {url}")
+                    continue
+                for other, ofile in LANDING.items():
+                    ourl = base if ofile == "index.html" else base + ofile
+                    if f'hreflang="{other}" href="{ourl}"' not in block.group(1):
+                        add("sitemap.xml", f"the entry of {url} lacks the alternate {other}")
+                if f'hreflang="x-default" href="{base}"' not in block.group(1):
+                    add("sitemap.xml", f"the entry of {url} lacks x-default")
     robots = root / "robots.txt"
     if not robots.is_file() or f"Sitemap: {base}sitemap.xml" not in robots.read_text(encoding="utf-8"):
         add("robots.txt", "missing or does not name the sitemap")
     return problems
 
 
+def check_landing(root, base):
+    """The three landing pages: equal to what _src/ builds, and sound on their own."""
+    problems = [f"landing: {p}" for p in BUILDER.check(root)]
+    pages = BUILDER.PAGES
+    for tag, spec in pages.items():
+        name = spec["file"]
+        path = root / name
+        if not path.is_file():
+            continue  # the builder check above already says so
+        text = path.read_text(encoding="utf-8")
+        url = base if name == "index.html" else base + name
+
+        def add(message, name=name):
+            problems.append(f"{name}: {message}")
+        if f'<html lang="{tag}"' not in text:
+            add(f"html lang should be {tag}")
+        if f'<link rel="canonical" href="{url}">' not in text:
+            add(f"canonical link should be {url}")
+        for other, ospec in pages.items():
+            ourl = base if ospec["file"] == "index.html" else base + ospec["file"]
+            if f'hreflang="{other}" href="{ourl}"' not in text:
+                add(f"hreflang {other} is missing or wrong")
+        if f'hreflang="x-default" href="{base}"' not in text:
+            add("hreflang x-default is missing or wrong")
+        if len(re.findall(r"<h1[\s>]", text)) != 1:
+            add("the page must have exactly one h1")
+        if len(re.findall(r"<nav[\s>]", text)) != 1:
+            add("the page must have exactly one <nav> element (the CSS pins every <nav> to the top of the window)")
+        if "data-i18n" in text or "const translations" in text:
+            add("leftover client-side translation (data-i18n or translations)")
+        if "<video" in text:
+            add("a <video> is on the page; the videos do not exist yet")
+        if not re.search(r"<title>[^<]+</title>", text):
+            add("no <title>")
+        if not re.search(r'<meta name="description" content="[^"]{20,}"', text):
+            add("no meta description")
+        for tagname in ("og:title", "og:description", "og:image"):
+            if f'property="{tagname}"' not in text:
+                add(f"{tagname} is missing")
+        if f'property="og:url" content="{url}"' not in text:
+            add(f"og:url should be {url}")
+        for img in re.findall(r"<img\b[^>]*>", text):
+            if not re.search(r'\balt="[^"]+"', img):
+                add(f"an <img> has no alt text: {img[:60]}")
+            if not (re.search(r'\bwidth="\d+"', img) and re.search(r'\bheight="\d+"', img)):
+                add(f"an <img> has no width and height: {img[:60]}")
+        ld = re.search(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)
+        try:
+            data = json.loads(ld.group(1)) if ld else None
+        except ValueError:
+            data = None
+        if not data:
+            add("structured data is missing or not JSON")
+        else:
+            if data.get("url") != url:
+                add(f"structured data url should be {url}")
+            if data.get("inLanguage") != tag:
+                add(f"structured data inLanguage should be {tag}")
+        if BUILDER.STORE_URL not in text:
+            add("the App Store link is missing")
+    return problems
+
+
 def check_live(base):
     problems = []
-    targets = [(base, None)] + [(base + p, p) for p in PAGES]
+    targets = [(base, "index.html")] + [(base + f, f) for f in LANDING.values() if f != "index.html"] + [(base + p, p) for p in PAGES]
     for url, page in targets:
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "check-site"}), timeout=25) as r:
@@ -107,7 +200,8 @@ def check_live(base):
             continue
         if status != 200:
             problems.append(f"{url}: HTTP {status}")
-        if page and f'<link rel="canonical" href="{base}{page}">' not in body:
+        want = base if page == "index.html" else base + (page or "")
+        if page and f'<link rel="canonical" href="{want}">' not in body:
             problems.append(f"{url}: the served page has a different canonical link")
         if page and page.startswith("support-") and f"mailto:{EMAIL}" not in body:
             problems.append(f"{url}: the contact email is missing")
