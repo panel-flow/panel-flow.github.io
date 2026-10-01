@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://panel-flow.github.io/</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/index-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/index-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/index-pt-BR.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/index-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/index-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/"/>
+  </url>
+  <url>
+    <loc>https://panel-flow.github.io/index-es-MX.html</loc>
+    <xhtml:link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/"/>
+    <xhtml:link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/index-es-MX.html"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/index-pt-BR.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/"/>
   </url>
   <url>
     <loc>https://panel-flow.github.io/privacy-policy-en.html</loc>

@@ -1,30 +1,26 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="{{html_lang}}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Flow — Smart Comic &amp; Manga Reader</title>
-  <meta name="description" content="Panel Flow: AI-powered comic and manga reader for iOS. Smart panel detection, guided reading, text-to-speech, and translation.">
-  <link rel="canonical" href="https://panel-flow.github.io/">
-  <link rel="alternate" hreflang="en-US" href="https://panel-flow.github.io/">
-  <link rel="alternate" hreflang="pt-BR" href="https://panel-flow.github.io/index-pt-BR.html">
-  <link rel="alternate" hreflang="es-MX" href="https://panel-flow.github.io/index-es-MX.html">
-  <link rel="alternate" hreflang="x-default" href="https://panel-flow.github.io/">
+  <title>{{meta_title}}</title>
+  <meta name="description" content="{{meta_description}}">
+  <link rel="canonical" href="{{canonical}}">
+  {{alternates}}
   <meta name="apple-itunes-app" content="app-id=6755895197">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Panel Flow">
-  <meta property="og:title" content="Panel Flow — Smart Comic &amp; Manga Reader">
-  <meta property="og:description" content="Panel Flow: AI-powered comic and manga reader for iOS. Smart panel detection, guided reading, text-to-speech, and translation.">
-  <meta property="og:url" content="https://panel-flow.github.io/">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:locale:alternate" content="pt_BR">
-  <meta property="og:locale:alternate" content="es_MX">
+  <meta property="og:title" content="{{meta_title}}">
+  <meta property="og:description" content="{{meta_description}}">
+  <meta property="og:url" content="{{canonical}}">
+  <meta property="og:locale" content="{{og_locale}}">
+  {{og_locale_alternates}}
   <meta property="og:image" content="https://panel-flow.github.io/img/og-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Panel Flow, a smart comic and manga reader, with three screenshots of the app">
+  <meta property="og:image:alt" content="{{meta_og_alt}}">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Panel Flow", "applicationCategory": "EntertainmentApplication", "operatingSystem": "iOS, iPadOS", "description": "Panel Flow: AI-powered comic and manga reader for iOS. Smart panel detection, guided reading, text-to-speech, and translation.", "url": "https://panel-flow.github.io/", "image": "https://panel-flow.github.io/img/og-card.png", "downloadUrl": "https://apps.apple.com/app/id6755895197", "inLanguage": "en-US"}</script>
+  <script type="application/ld+json">{{json_ld}}</script>
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -176,21 +172,17 @@
 <!-- NAV -->
 <nav>
   <div class="container">
-    <a href="https://apps.apple.com/app/id6755895197" class="nav-logo" target="_blank" rel="noopener">
+    <a href="{{store_url}}" class="nav-logo" target="_blank" rel="noopener">
       <svg viewBox="0 0 1024 1024" style="border-radius:8px;flex-shrink:0;overflow:hidden"><defs><linearGradient id="navIconBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F27888"/><stop offset="100%" stop-color="#E8607A"/></linearGradient></defs><rect width="1024" height="1024" rx="224" fill="url(#navIconBg)"/><g transform="translate(280,220) rotate(-8,160,160)"><rect width="320" height="360" rx="40" fill="#FFB833" opacity="0.95"/></g><g transform="translate(430,160) rotate(5,160,160)"><rect width="340" height="370" rx="40" fill="#2BC9A2" opacity="0.92"/></g><g transform="translate(180,430) rotate(-3,180,180)"><rect width="360" height="360" rx="40" fill="#7C52E0" opacity="0.92"/></g><g transform="translate(430,420) rotate(3,180,180)"><rect width="380" height="380" rx="40" fill="#E84878" opacity="0.88"/></g></svg>
       Panel Flow
     </a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#reader">Reader</a></li>
-      <li><a href="#ai">Intelligence</a></li>
-      <li><a href="#formats">Formats</a></li>
+      <li><a href="#features">{{nav_features}}</a></li>
+      <li><a href="#reader">{{nav_reader}}</a></li>
+      <li><a href="#ai">{{nav_ai}}</a></li>
+      <li><a href="#formats">{{nav_formats}}</a></li>
       <li>
-        <div class="lang-switcher" role="group" aria-label="Language">
-          <a class="lang-btn" href="index-pt-BR.html" hreflang="pt-BR" lang="pt-BR">PT</a>
-          <a class="lang-btn active" href="./" hreflang="en-US" lang="en-US" aria-current="page">EN</a>
-          <a class="lang-btn" href="index-es-MX.html" hreflang="es-MX" lang="es-MX">ES</a>
-        </div>
+        {{lang_switcher}}
       </li>
     </ul>
     <button class="nav-toggle" id="navToggle" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -203,27 +195,27 @@
     <div class="hero-content fade-up">
       <div class="hero-badge">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l2 4.5L15 6l-3.5 3.5L12.5 15 8 12.5 3.5 15l1-5.5L1 6l5-0.5z"/></svg>
-        <span>AI-Powered</span>
+        <span>{{hero_badge}}</span>
       </div>
       <h1 class="hero-title">
-        <span>Read comics</span><br>
-        <span class="gradient-text">like never before.</span>
+        <span>{{hero_title_1}}</span><br>
+        <span class="gradient-text">{{hero_title_2}}</span>
       </h1>
-      <p class="hero-desc">Panel Flow uses artificial intelligence to detect panels, read speech bubbles aloud, translate content, and guide your reading — panel by panel.</p>
+      <p class="hero-desc">{{hero_desc}}</p>
       <div class="hero-actions">
-        <a href="https://apps.apple.com/app/id6755895197" class="btn-primary" target="_blank" rel="noopener">
+        <a href="{{store_url}}" class="btn-primary" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          <span>Download on App Store</span>
+          <span>{{hero_cta}}</span>
         </a>
         <a href="#features" class="btn-secondary">
-          <span>Learn more</span>
+          <span>{{hero_cta2}}</span>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7.8H7.8"/></svg>
         </a>
       </div>
     </div>
     <div class="hero-visual fade-up">
       <div class="hero-phone-glow"></div>
-      <img class="hero-phone" src="img/screenshot_1-en.webp" width="640" height="1384" alt="Panel Flow showing a comic page" fetchpriority="high" decoding="async">
+      <img class="hero-phone" src="{{src:hero}}" width="{{w:hero}}" height="{{h:hero}}" alt="{{alt_hero}}" fetchpriority="high" decoding="async">
     </div>
   </div>
 </section>
@@ -232,40 +224,40 @@
 <section class="section features-section" id="features">
   <div class="container">
     <div class="features-header fade-up">
-      <span class="section-label">Features</span>
-      <h2 class="section-title">Everything for your perfect read</h2>
-      <p class="section-subtitle">Smart tools that transform how you read comics and manga on your iPhone and iPad.</p>
+      <span class="section-label">{{feat_label}}</span>
+      <h2 class="section-title">{{feat_title}}</h2>
+      <p class="section-subtitle">{{feat_subtitle}}</p>
     </div>
     <div class="features-grid">
       <div class="feature-card fade-up">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
-        <h3>Panel Detection</h3>
-        <p>Machine learning automatically identifies each panel on the page, with smart ordering for comics and manga.</p>
+        <h3>{{f1_title}}</h3>
+        <p>{{f1_desc}}</p>
       </div>
       <div class="feature-card fade-up">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-        <h3>Speech Bubbles &amp; OCR</h3>
-        <p>Detects bubbles, extracts text with OCR, and automatically identifies languages for each page.</p>
+        <h3>{{f2_title}}</h3>
+        <p>{{f2_desc}}</p>
       </div>
       <div class="feature-card fade-up">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
-        <h3>Text-to-Speech</h3>
-        <p>Listen to your comics read aloud with Apple TTS or premium OpenAI voices, with synchronized highlighting.</p>
+        <h3>{{f3_title}}</h3>
+        <p>{{f3_desc}}</p>
       </div>
       <div class="feature-card fade-up">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
-        <h3>Built-in Translation</h3>
-        <p>Translate speech bubbles in real time using the iOS Translation framework, with overlay right on the page.</p>
+        <h3>{{f4_title}}</h3>
+        <p>{{f4_desc}}</p>
       </div>
       <div class="feature-card fade-up">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></div>
-        <h3>Complete Library</h3>
-        <p>Organize your collection with search, sorting, editable metadata, and a smart &quot;Continue Reading&quot; section.</p>
+        <h3>{{f5_title}}</h3>
+        <p>{{f5_desc}}</p>
       </div>
       <div class="feature-card fade-up">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
-        <h3>Edit Mode</h3>
-        <p>Manually adjust panels and bubbles, edit OCR text, and refine detection results.</p>
+        <h3>{{f6_title}}</h3>
+        <p>{{f6_desc}}</p>
       </div>
     </div>
   </div>
@@ -277,13 +269,13 @@
     <div class="showcase fade-up">
       <div class="showcase-visual">
         <div class="showcase-video-wrapper">
-          <img src="img/poster_reading_en.webp" width="600" height="1300" alt="Reading mode" loading="lazy" decoding="async">
+          <img src="{{src:reading}}" width="{{w:reading}}" height="{{h:reading}}" alt="{{alt_reading}}" loading="lazy" decoding="async">
         </div>
       </div>
       <div>
-        <span class="section-label">Reader</span>
-        <h2 class="section-title">Smooth reading in every format</h2>
-        <p class="section-subtitle">Horizontal navigation for comics and manga, or continuous vertical scroll for webtoons. Smooth zoom, adaptive gradient background, and lazy loading for maximum performance.</p>
+        <span class="section-label">{{read_label}}</span>
+        <h2 class="section-title">{{read_title}}</h2>
+        <p class="section-subtitle">{{read_desc}}</p>
       </div>
     </div>
   </div>
@@ -294,12 +286,12 @@
   <div class="container">
     <div class="showcase reverse fade-up">
       <div class="showcase-visual">
-        <img class="showcase-phone" src="img/screenshot_2-en.webp" width="640" height="1384" alt="Guided reading mode, one panel at a time" loading="lazy" decoding="async">
+        <img class="showcase-phone" src="{{src:ai}}" width="{{w:ai}}" height="{{h:ai}}" alt="{{alt_ai}}" loading="lazy" decoding="async">
       </div>
       <div>
-        <span class="section-label">Artificial Intelligence</span>
-        <h2 class="section-title">Guided reading, panel by panel</h2>
-        <p class="section-subtitle">Guided mode uses machine learning to automatically navigate between panels with zoom and smooth animations. Tap the screen to advance — it's like having a personal guide for each page.</p>
+        <span class="section-label">{{ai_label}}</span>
+        <h2 class="section-title">{{ai_title}}</h2>
+        <p class="section-subtitle">{{ai_desc}}</p>
       </div>
     </div>
   </div>
@@ -310,12 +302,12 @@
   <div class="container">
     <div class="showcase fade-up">
       <div class="showcase-visual">
-        <img class="showcase-phone" src="img/screenshot_3-en.webp" width="640" height="1384" alt="Translation over the speech balloons" loading="lazy" decoding="async">
+        <img class="showcase-phone" src="{{src:trans}}" width="{{w:trans}}" height="{{h:trans}}" alt="{{alt_trans}}" loading="lazy" decoding="async">
       </div>
       <div>
-        <span class="section-label">Translation</span>
-        <h2 class="section-title">Read in any language</h2>
-        <p class="section-subtitle">Automatic speech bubble translation right on the page. Detects the original language or lets you choose — read manga and comics without barriers.</p>
+        <span class="section-label">{{trans_label}}</span>
+        <h2 class="section-title">{{trans_title}}</h2>
+        <p class="section-subtitle">{{trans_desc}}</p>
       </div>
     </div>
   </div>
@@ -327,13 +319,13 @@
     <div class="showcase reverse fade-up">
       <div class="showcase-visual">
         <div class="showcase-video-wrapper">
-          <img src="img/poster_guided.webp" width="600" height="1300" alt="Guided mode" loading="lazy" decoding="async">
+          <img src="{{src:guided}}" width="{{w:guided}}" height="{{h:guided}}" alt="{{alt_guided}}" loading="lazy" decoding="async">
         </div>
       </div>
       <div>
-        <span class="section-label">Guided Mode</span>
-        <h2 class="section-title">Auto-zoom on every panel</h2>
-        <p class="section-subtitle">See every panel in detail with automatic zoom and animated transitions. The app understands reading direction — left to right for comics, right to left for manga.</p>
+        <span class="section-label">{{guided_label}}</span>
+        <h2 class="section-title">{{guided_title}}</h2>
+        <p class="section-subtitle">{{guided_desc}}</p>
       </div>
     </div>
   </div>
@@ -343,10 +335,10 @@
 <section class="section">
   <div class="container">
     <div class="stats-bar fade-up">
-      <div class="stat-item"><div class="stat-number gradient-text">6+</div><div class="stat-label">Supported formats</div></div>
-      <div class="stat-item"><div class="stat-number gradient-text">3</div><div class="stat-label">Reading directions</div></div>
-      <div class="stat-item"><div class="stat-number gradient-text">2</div><div class="stat-label">TTS engines</div></div>
-      <div class="stat-item"><div class="stat-number gradient-text">100%</div><div class="stat-label">Accessible (VoiceOver)</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">6+</div><div class="stat-label">{{stat1}}</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">3</div><div class="stat-label">{{stat2}}</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">2</div><div class="stat-label">{{stat3}}</div></div>
+      <div class="stat-item"><div class="stat-number gradient-text">100%</div><div class="stat-label">{{stat4}}</div></div>
     </div>
   </div>
 </section>
@@ -354,16 +346,16 @@
 <!-- FORMATS -->
 <section class="section features-section" id="formats">
   <div class="container fade-up">
-    <span class="section-label">Compatibility</span>
-    <h2 class="section-title">Your files, no limitations</h2>
-    <p class="section-subtitle">Import comics and manga from any popular format. Panel Flow takes care of the rest.</p>
+    <span class="section-label">{{fmt_label}}</span>
+    <h2 class="section-title">{{fmt_title}}</h2>
+    <p class="section-subtitle">{{fmt_desc}}</p>
     <div class="formats-grid">
       <div class="format-pill"><span class="ext">CBZ</span><span class="name">Comic Book ZIP</span></div>
       <div class="format-pill"><span class="ext">CBR</span><span class="name">Comic Book RAR</span></div>
       <div class="format-pill"><span class="ext">CB7</span><span class="name">Comic Book 7-Zip</span></div>
       <div class="format-pill"><span class="ext">CBT</span><span class="name">Comic Book TAR</span></div>
       <div class="format-pill"><span class="ext">PDF</span><span class="name">Portable Document</span></div>
-      <div class="format-pill"><span class="ext">ZIP</span><span class="name">Generic archive</span></div>
+      <div class="format-pill"><span class="ext">ZIP</span><span class="name">{{fmt_zip}}</span></div>
     </div>
   </div>
 </section>
@@ -372,15 +364,15 @@
 <section class="section">
   <div class="container fade-up">
     <div style="text-align:center;margin-bottom:48px">
-      <span class="section-label">Technology</span>
-      <h2 class="section-title">Built with the best of iOS</h2>
+      <span class="section-label">{{tech_label}}</span>
+      <h2 class="section-title">{{tech_title}}</h2>
     </div>
     <div class="tech-grid">
       <div class="tech-item"><div><div class="tech-label">UI</div><div class="tech-value">SwiftUI · Liquid Glass</div></div></div>
-      <div class="tech-item"><div><div class="tech-label">Persistence</div><div class="tech-value">SwiftData</div></div></div>
+      <div class="tech-item"><div><div class="tech-label">{{tech_persist}}</div><div class="tech-value">SwiftData</div></div></div>
       <div class="tech-item"><div><div class="tech-label">Machine Learning</div><div class="tech-value">Vision · CoreML</div></div></div>
       <div class="tech-item"><div><div class="tech-label">Text-to-Speech</div><div class="tech-value">AVSpeech · OpenAI</div></div></div>
-      <div class="tech-item"><div><div class="tech-label">Security</div><div class="tech-value">Keychain</div></div></div>
+      <div class="tech-item"><div><div class="tech-label">{{tech_security}}</div><div class="tech-value">Keychain</div></div></div>
       <div class="tech-item"><div><div class="tech-label">Tracking</div><div class="tech-value">MyAnimeList · AniList</div></div></div>
     </div>
   </div>
@@ -389,13 +381,13 @@
 <!-- CTA -->
 <section class="section cta-section">
   <div class="container fade-up">
-    <span class="section-label">Get started</span>
-    <h2 class="section-title">Your library deserves<br><span class="gradient-text">a smart reader.</span></h2>
-    <p class="section-subtitle">Available for iPhone and iPad with iOS 26+. Download free on the App Store.</p>
+    <span class="section-label">{{cta_label}}</span>
+    <h2 class="section-title">{{cta_title}}<br><span class="gradient-text">{{cta_title2}}</span></h2>
+    <p class="section-subtitle">{{cta_desc}}</p>
     <div style="margin-top:40px">
-      <a href="https://apps.apple.com/app/id6755895197" class="btn-primary" target="_blank" rel="noopener">
+      <a href="{{store_url}}" class="btn-primary" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-        <span>Download on App Store</span>
+        <span>{{hero_cta}}</span>
       </a>
     </div>
   </div>
@@ -404,8 +396,8 @@
 <!-- FOOTER -->
 <footer>
   <div class="container">
-    <p>&copy; 2026 Panel Flow. <span>All rights reserved.</span></p>
-    <div role="navigation" aria-label="Legal" style="margin-top:8px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px"><a href="privacy-policy-en.html" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''">Privacy Policy</a><a href="terms-en.html" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''">Terms of Use</a><a href="support-en.html" style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color='#E8566C'" onmouseout="this.style.color=''">Support</a></div>
+    <p>&copy; {{year}} Panel Flow. <span>{{footer}}</span></p>
+    {{legal_nav}}
   </div>
 </footer>
 
