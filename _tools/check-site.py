@@ -3,12 +3,12 @@
 
     python3 _tools/check-site.py [--live] [--base URL]
 
-Offline (default), run from anywhere: reads the HTML files of the repository and checks the pages the app links to
-(privacy-policy- and support- plus en, es-MX or pt-BR; terms- is held back in _drafts/), the canonical and hreflang links, Open Graph tags, local
+Offline (default), run from anywhere: reads the HTML files of the repository and checks the nine pages the app links to
+(privacy-policy-, terms- and support- plus en, es-MX or pt-BR), the canonical and hreflang links, Open Graph tags, local
 links and images, leftover [[PLACEHOLDER]] markers, references to the old address, the contact email on the support
 pages, the sitemap and robots.txt. Prints one line per problem and `PASS` or `FAIL`; exit code 1 on FAIL.
 
---live also fetches the landing and the pages from --base (default https://panel-flow.github.io/) and expects HTTP 200
+--live also fetches the landing and the nine pages from --base (default https://panel-flow.github.io/) and expects HTTP 200
 plus the expected canonical link, and the contact email on the support pages.
 """
 import re
@@ -20,8 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_BASE = "https://panel-flow.github.io/"
 OLD_HOST = "sciasxp.github.io"
 EMAIL = "sciasxp@gmail.com"
-# "terms" joins this list when _drafts/terms-*.html move back to the root (see docs in the release plan).
-GROUPS = ["privacy-policy", "support"]
+GROUPS = ["privacy-policy", "terms", "support"]
 LOCALES = {"en": "en-US", "es-MX": "es-MX", "pt-BR": "pt-BR"}
 PAGES = [f"{g}-{k}.html" for g in GROUPS for k in LOCALES]
 
