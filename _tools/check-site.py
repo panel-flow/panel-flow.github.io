@@ -12,6 +12,7 @@ size on every image, no leftover i18n), the sitemap and robots.txt. Prints one l
 --live also fetches the landing and the nine pages from --base (default https://panel-flow.github.io/) and expects HTTP 200
 plus the expected canonical link, and the contact email on the support pages.
 """
+import html
 import importlib.util
 import json
 import re
@@ -26,6 +27,7 @@ EMAIL = "sciasxp@gmail.com"
 GROUPS = ["privacy-policy", "terms", "support"]
 LOCALES = {"en": "en-US", "es-MX": "es-MX", "pt-BR": "pt-BR"}
 PAGES = [f"{g}-{k}.html" for g in GROUPS for k in LOCALES]
+TITLE_MAX, DESC_MAX, LANDING_DESC_MIN = 60, 155, 70  # what a search result shows before it cuts; the landing says more than a legal page
 
 
 def _builder():
@@ -37,6 +39,35 @@ def _builder():
 
 BUILDER = _builder()
 LANDING = {tag: page["file"] for tag, page in BUILDER.PAGES.items()}  # tag -> file; en-US is the root
+STORE_ID = BUILDER.STORE_URL.rsplit("/id", 1)[1]
+
+
+def page_meta(text):
+    """(title, description) of a page, unescaped; None for what is missing."""
+    title = re.search(r"<title>([^<]+)</title>", text)
+    desc = re.search(r'<meta name="description" content="([^"]*)"', text)
+    return (html.unescape(title.group(1)) if title else None, html.unescape(desc.group(1)) if desc else None)
+
+
+def og_content(text, prop):
+    found = re.search(r'<meta property="%s" content="([^"]*)"' % re.escape(prop), text)
+    return html.unescape(found.group(1)) if found else None
+
+
+def check_search_text(name, text, add, landing_page=False):
+    """Length of the title and description the way a search result shows them, and the social tags saying the same."""
+    title, desc = page_meta(text)
+    if title and len(title) > TITLE_MAX:
+        add(name, f"the title has {len(title)} characters, above {TITLE_MAX}")
+    if desc is not None:
+        if len(desc) > DESC_MAX:
+            add(name, f"the meta description has {len(desc)} characters, above {DESC_MAX}")
+        if landing_page and len(desc) < LANDING_DESC_MIN:
+            add(name, f"the meta description has {len(desc)} characters, below {LANDING_DESC_MIN}")
+    for prop, value in (("og:title", title), ("og:description", desc)):
+        have = og_content(text, prop)
+        if have is not None and value is not None and have != value:
+            add(name, f"{prop} differs from the page's own {'title' if prop == 'og:title' else 'meta description'}")
 
 
 def check_offline(root=ROOT, base=DEFAULT_BASE, landing=True):
@@ -84,6 +115,7 @@ def check_offline(root=ROOT, base=DEFAULT_BASE, landing=True):
                 add(page, f"{tag} is missing")
         if group == "support" and f"mailto:{EMAIL}" not in text:
             add(page, f"the contact email {EMAIL} is missing")
+        check_search_text(page, text, add)
 
     index = root / "index.html"
     if not index.is_file():
@@ -119,6 +151,18 @@ def check_offline(root=ROOT, base=DEFAULT_BASE, landing=True):
                         add("sitemap.xml", f"the entry of {url} lacks the alternate {other}")
                 if f'hreflang="x-default" href="{base}"' not in block.group(1):
                     add("sitemap.xml", f"the entry of {url} lacks x-default")
+    seen = {}
+    for name in PAGES + (list(LANDING.values()) if landing else []):
+        path = root / name
+        if not path.is_file():
+            continue
+        for kind, value in zip(("title", "meta description"), page_meta(path.read_text(encoding="utf-8"))):
+            if value is None:
+                continue
+            if (kind, value) in seen:
+                add(name, f"the {kind} is the same as the one of {seen[(kind, value)]}")
+            else:
+                seen[(kind, value)] = name
     robots = root / "robots.txt"
     if not robots.is_file() or f"Sitemap: {base}sitemap.xml" not in robots.read_text(encoding="utf-8"):
         add("robots.txt", "missing or does not name the sitemap")
@@ -188,6 +232,11 @@ def check_landing(root, base):
             add("no <title>")
         if not re.search(r'<meta name="description" content="[^"]{20,}"', text):
             add("no meta description")
+        check_search_text(name, text, lambda where, message: add(message), landing_page=True)
+        if og_content(text, "og:locale") != spec["og"]:
+            add(f"og:locale should be {spec['og']}")
+        if f'<meta name="apple-itunes-app" content="app-id={STORE_ID}"' not in text:
+            add(f"the Smart App Banner (apple-itunes-app, app-id={STORE_ID}) is missing")
         for tagname in ("og:title", "og:description", "og:image"):
             if f'property="{tagname}"' not in text:
                 add(f"{tagname} is missing")
@@ -214,6 +263,17 @@ def check_landing(root, base):
                 add(f"structured data url should be {url}")
             if data.get("inLanguage") != tag:
                 add(f"structured data inLanguage should be {tag}")
+            if data.get("@context") != "https://schema.org" or data.get("@type") != "SoftwareApplication":
+                add("structured data should be a schema.org SoftwareApplication")
+            for field in ("name", "applicationCategory", "operatingSystem"):
+                if not data.get(field):
+                    add(f"structured data lacks {field}")
+            if data.get("downloadUrl") != BUILDER.STORE_URL:
+                add(f"structured data downloadUrl should be {BUILDER.STORE_URL}")
+            if data.get("image") != og_content(text, "og:image"):
+                add("structured data image differs from og:image")
+            if data.get("description") != page_meta(text)[1]:
+                add("structured data description differs from the meta description")
         if BUILDER.STORE_URL not in text:
             add("the App Store link is missing")
     return problems

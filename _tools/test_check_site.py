@@ -19,9 +19,9 @@ def page_html(base, group, key, body=""):
     links = "".join(f'<link rel="alternate" hreflang="{h}" href="{base}{group}-{k}.html">'
                     for k, h in check_site.LOCALES.items())
     links += f'<link rel="alternate" hreflang="x-default" href="{base}{group}-en.html">'
-    return (f'<!doctype html><html lang="{check_site.LOCALES[key]}"><head><title>T</title>'
+    return (f'<!doctype html><html lang="{check_site.LOCALES[key]}"><head><title>T {group}-{key}</title>'
             f'<link rel="canonical" href="{base}{group}-{key}.html">{links}'
-            '<meta property="og:title" content="T"><meta property="og:description" content="D">'
+            f'<meta property="og:title" content="T {group}-{key}"><meta property="og:description" content="D">'
             f'<meta property="og:url" content="{base}{group}-{key}.html"><meta property="og:image" content="{base}img/o.png">'
             f'</head><body>{body}</body></html>')
 
@@ -100,6 +100,29 @@ class OfflineTests(unittest.TestCase):
     def test_missing_open_graph_tags_are_reported(self):
         self.edit("support-en.html", '<meta property="og:image"', '<meta property="x:image"')
         self.assertTrue(any("og:image is missing" in p for p in self.problems()))
+
+    def test_a_title_or_description_repeated_between_pages_is_reported(self):
+        self.edit("terms-es-MX.html", "<title>T terms-es-MX</title>", "<title>T terms-en</title>")
+        self.assertTrue(any("terms-es-MX.html: the title is the same as the one of terms-en.html" in p for p in self.problems()))
+        self.setUp()
+        for name in ("terms-en.html", "terms-pt-BR.html"):
+            self.edit(name, "<head>", '<head><meta name="description" content="Same words">')
+        self.assertTrue(any("terms-pt-BR.html: the meta description is the same as the one of terms-en.html" in p for p in self.problems()))
+
+    def test_a_title_or_description_above_the_search_limit_is_reported(self):
+        self.edit("terms-en.html", "<title>T terms-en</title>", f"<title>{'x' * 61}</title>")
+        self.assertTrue(any("terms-en.html: the title has 61 characters, above 60" in p for p in self.problems()))
+        self.setUp()
+        self.edit("terms-en.html", "<head>", f'<head><meta name="description" content="{"y" * 156}">')
+        self.assertTrue(any("terms-en.html: the meta description has 156 characters, above 155" in p for p in self.problems()))
+        self.setUp()
+        self.edit("terms-en.html", "<title>T terms-en</title>", f"<title>{'x' * 60}</title>")  # the limit itself is allowed
+        self.edit("terms-en.html", 'og:title" content="T terms-en"', f'og:title" content="{"x" * 60}"')
+        self.assertEqual(self.problems(), [])
+
+    def test_the_social_tags_must_say_what_the_page_says(self):
+        self.edit("support-en.html", '<meta property="og:title" content="T support-en">', '<meta property="og:title" content="Other">')
+        self.assertTrue(any("support-en.html: og:title differs from the page's own title" in p for p in self.problems()))
 
 
 class LandingCheckTests(unittest.TestCase):
@@ -209,6 +232,20 @@ class LandingCheckTests(unittest.TestCase):
             ("index.html", '"url": "https://panel-flow.github.io/"', '"url": "https://x/"', "structured data url should be"),
             ("index.html", "https://apps.apple.com/app/id6755895197", "https://example.com/", "the App Store link is missing", 99),
             ("index.html", "<title>", "<tit>", "no <title>"),
+            ("index.html", '<meta name="apple-itunes-app" content="app-id=6755895197">', "", "the Smart App Banner"),
+            ("index-pt-BR.html", '<meta name="apple-itunes-app" content="app-id=6755895197">', '<meta name="apple-itunes-app" content="app-id=1">',
+             "the Smart App Banner"),
+            ("index-es-MX.html", 'property="og:locale" content="es_MX"', 'property="og:locale" content="en_US"', "og:locale should be es_MX"),
+            ("index.html", '"@type": "SoftwareApplication"', '"@type": "WebPage"', "structured data should be a schema.org SoftwareApplication"),
+            ("index.html", '"@context": "https://schema.org"', '"@context": "https://example.com"', "structured data should be a schema.org SoftwareApplication"),
+            ("index.html", '"applicationCategory": "EntertainmentApplication", ', "", "structured data lacks applicationCategory"),
+            ("index.html", '"operatingSystem": "iOS, iPadOS", ', "", "structured data lacks operatingSystem"),
+            ("index.html", '"downloadUrl": "https://apps.apple.com/app/id6755895197"', '"downloadUrl": "https://example.com/"',
+             "structured data downloadUrl should be"),
+            ("index.html", '"image": "https://panel-flow.github.io/img/og-card.png"', '"image": "https://panel-flow.github.io/img/other.png"',
+             "structured data image differs from og:image"),
+            ("index.html", '"description": "Panel Flow: AI-powered', '"description": "Another: AI-powered',
+             "structured data description differs from the meta description"),
         ]
         for name, old, new, message, *count in cases:
             with self.subTest(message=message):
@@ -216,6 +253,32 @@ class LandingCheckTests(unittest.TestCase):
                 self.edit(name, old, new, *(count or [1]))
                 self.has(message)
                 (self.root / name).write_text(backup, encoding="utf-8")
+
+    def test_the_landing_description_must_say_enough_and_not_too_much(self):
+        title, desc = check_site.page_meta((self.root / "index.html").read_text(encoding="utf-8"))
+        self.edit("index.html", f'<meta name="description" content="{desc}"', '<meta name="description" content="Short but long enough for the old check"')
+        self.has("index.html: the meta description has 39 characters, below 70")
+        self.setUp()
+        self.edit("index.html", f'<meta name="description" content="{desc}"', f'<meta name="description" content="{"z" * 156}"')
+        self.has("index.html: the meta description has 156 characters, above 155")
+
+    def test_the_landing_description_limits_are_inclusive(self):
+        _, desc = check_site.page_meta((self.root / "index.html").read_text(encoding="utf-8"))
+        for size, below in ((70, False), (69, True)):
+            self.edit("index.html", f'<meta name="description" content="{desc}"', f'<meta name="description" content="{"z" * size}"')
+            self.assertEqual(any("below 70" in p for p in self.problems()), below, size)
+            self.setUp()
+        for size, above in ((155, False), (156, True)):
+            self.edit("index.html", f'<meta name="description" content="{desc}"', f'<meta name="description" content="{"z" * size}"')
+            self.assertEqual(any("above 155" in p for p in self.problems()), above, size)
+            self.setUp()
+
+    def test_the_landing_pages_cannot_share_a_title_or_a_description(self):
+        text = (self.root / "index-es-MX.html").read_text(encoding="utf-8")
+        title, _ = check_site.page_meta((self.root / "index.html").read_text(encoding="utf-8"))
+        other, _ = check_site.page_meta(text)
+        self.edit("index-es-MX.html", f"<title>{other}</title>", f"<title>{title}</title>")
+        self.has("index-es-MX.html: the title is the same as the one of index.html")
 
     def test_a_missing_landing_page_is_named(self):
         (self.root / "index-es-MX.html").unlink()
