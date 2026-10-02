@@ -130,6 +130,50 @@ class LandingCheckTests(unittest.TestCase):
     def test_the_real_site_passes(self):
         self.assertEqual(self.problems(), [])
 
+    GOOD_VIDEO = ('<video controls muted playsinline preload="none" poster="img/og-card.png" width="640" height="1390" aria-label="x">'
+                  '<source src="video/release/demo.mp4" type="video/mp4"></video>')
+
+    def with_video(self, video=None, files=True):
+        (self.root / "video" / "release").mkdir(parents=True, exist_ok=True)
+        if files:
+            (self.root / "video" / "release" / "demo.mp4").write_bytes(b"mp4")
+        self.edit("index.html", "<body>", "<body>" + (video or self.GOOD_VIDEO))
+
+    def video_problems(self):
+        return [p for p in self.problems() if "<video>" in p or "video" in p.lower() and "poster" in p or "the video" in p or "<source>" in p]
+
+    def test_a_demo_video_as_the_builder_writes_it_passes(self):
+        self.with_video()
+        self.assertEqual(self.video_problems(), [])
+
+    def test_a_video_must_be_silent_paused_preloaded_nothing_and_have_a_poster_and_a_name(self):
+        for old, new, message in (
+                ("controls ", "", "lacks controls"), ("muted ", "", "lacks muted"), ("playsinline ", "", "lacks playsinline"),
+                ('preload="none"', 'preload="auto"', 'lacks preload="none"'), (" aria-label=\"x\"", "", "no aria-label"),
+                (' width="640" height="1390"', "", "no width and height"), (' poster="img/og-card.png"', "", "has no poster"),
+                ("controls ", "controls autoplay ", "has autoplay"), ("controls ", "controls loop ", "has loop")):
+            self.setUp()
+            self.with_video(self.GOOD_VIDEO.replace(old, new, 1))
+            self.assertTrue(any(message in p for p in self.problems()), (message, self.problems()))
+
+    def test_a_video_whose_files_do_not_exist_is_named(self):
+        self.with_video(self.GOOD_VIDEO.replace("img/og-card.png", "img/nope.png"))
+        self.has("the poster img/nope.png does not exist")
+        self.setUp()
+        self.with_video(files=False)
+        self.has("the video video/release/demo.mp4 does not exist")
+
+    def test_the_source_must_be_one_mp4_under_video(self):
+        self.with_video(self.GOOD_VIDEO.replace("video/release/demo.mp4", "elsewhere/demo.mp4"))
+        self.has("a <source> must be an mp4 under video/")
+        self.setUp()
+        self.with_video(self.GOOD_VIDEO.replace("</video>", '<source src="video/release/demo.mp4" type="video/mp4"></video>'))
+        self.has("needs exactly one <source>")
+
+    def test_at_most_two_videos_a_page(self):
+        self.with_video(self.GOOD_VIDEO * 3)
+        self.has("3 <video> elements on the page")
+
     def test_art_behind_a_section_must_exist(self):
         self.edit("index.html", '<section class="hero">', '<section class="hero" data-art style="--art:url(img/release/missing.webp)">')
         self.has("index.html: url(img/release/missing.webp) points to a file that does not exist")
@@ -156,7 +200,7 @@ class LandingCheckTests(unittest.TestCase):
              "hreflang pt-BR is missing or wrong"),
             ("index.html", "<h1 ", "<h1 ></h1><h1 ", "exactly one h1"),
             ("index.html", "<body>", '<body><p data-i18n="x">x</p>', "leftover client-side translation"),
-            ("index.html", "<body>", "<body><video></video>", "a <video> is on the page"),
+            ("index.html", "<body>", "<body><video></video>", "a <video> lacks controls"),
             ("index.html", "<body>", '<body><nav aria-label="Legal"></nav>', "exactly one <nav> element"),
             ("index.html", "<body>", '<body><img src="img/og-card.png" width="1" height="1">', "an <img> has no alt text"),
             ("index.html", "<body>", '<body><img src="img/og-card.png" alt="x">', "has no width and height"),
