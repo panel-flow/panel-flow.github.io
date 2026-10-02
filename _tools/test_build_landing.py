@@ -115,6 +115,25 @@ class OutputTests(BuildCase):
         self.assertNotIn("iOS 26+", page)
         self.assertIn("&copy; 2027 Panel Flow.", page)
 
+    def test_the_numbers_of_the_stats_bar_come_from_the_content_not_the_template(self):
+        template = (self.root / "_src" / "landing.html").read_text(encoding="utf-8")
+        self.assertNotRegex(template, r'stat-number gradient-text">[^{]')  # no literal number in the template
+        page = self.pages()["index.html"]
+        for n, value in ((1, "6+"), (2, "3"), (3, "2"), (4, "100%")):
+            self.assertIn(f'<div class="stat-number gradient-text">{value}</div>', page)
+        self.content("pt-BR", stat4_value="98 %")
+        self.assertIn('<div class="stat-number gradient-text">98 %</div>', self.pages()["index-pt-BR.html"])
+        self.assertIn('<div class="stat-number gradient-text">100%</div>', self.pages()["index.html"])  # per language
+
+    def test_a_stat_number_missing_in_one_language_is_named(self):
+        path = self.root / "_src" / "content" / "es-MX.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        del data["stat2_value"]
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("es-MX: missing the key 'stat2_value'", str(ctx.exception))
+
     def test_quotes_in_a_text_cannot_break_an_attribute(self):
         self.content("en-US", meta_description='A "quoted" <b>description</b> & more')
         page = self.pages()["index.html"]
