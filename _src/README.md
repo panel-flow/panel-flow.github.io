@@ -3,7 +3,7 @@
 `index.html`, `index-pt-BR.html` and `index-es-MX.html` are **generated**: do not edit them by hand.
 
 - `landing.html`: the page, with `{{placeholders}}` (the CSS is the one of the old page plus a few rules for the static pages).
-- `content/<tag>.json`: the texts of one language, the alt texts and the image of each slot.
+- `content/<tag>.json`: the texts of one language, the alt texts, the image of each slot and the numbers of the stats bar (`statN_value`, shown above the label `statN`).
 - `facts.json`: facts that change with a release (`min_ios`, `year`); the content uses them as `{min_ios}` and `{year}`.
 - `assets.json`: the pixel size of each image (`python3 _tools/build-landing.py --assets` rewrites it).
 
