@@ -160,7 +160,7 @@
       .hero-actions{flex-direction:column;width:100%}
       .btn-primary,.btn-secondary{width:100%;justify-content:center}
     }
-    img{height:auto}
+    img,video{height:auto}
     a.lang-btn{display:inline-block;text-decoration:none;line-height:normal}
     .nav-links a.lang-btn{color:var(--text-muted);font-size:0.8rem;font-weight:600}
     .nav-links a.lang-btn.active{color:white}
@@ -270,7 +270,7 @@
     <div class="showcase fade-up">
       <div class="showcase-visual">
         <div class="showcase-video-wrapper">
-          <img src="{{src:reading}}" width="{{w:reading}}" height="{{h:reading}}" alt="{{alt_reading}}" loading="lazy" decoding="async">
+          {{media_reading}}
         </div>
       </div>
       <div>
@@ -320,7 +320,7 @@
     <div class="showcase reverse fade-up">
       <div class="showcase-visual">
         <div class="showcase-video-wrapper">
-          <img src="{{src:guided}}" width="{{w:guided}}" height="{{h:guided}}" alt="{{alt_guided}}" loading="lazy" decoding="async">
+          {{media_guided}}
         </div>
       </div>
       <div>

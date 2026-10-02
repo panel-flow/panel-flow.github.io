@@ -155,8 +155,35 @@ def check_landing(root, base):
             add("the page must have exactly one <nav> element (the CSS pins every <nav> to the top of the window)")
         if "data-i18n" in text or "const translations" in text:
             add("leftover client-side translation (data-i18n or translations)")
-        if "<video" in text:
-            add("a <video> is on the page; the videos do not exist yet")
+        videos = re.findall(r"<video\b[^>]*>.*?</video>|<video\b[^>]*>", text, re.S)
+        if len(videos) > len(BUILDER.VIDEO_SLOTS):
+            add(f"{len(videos)} <video> elements on the page; at most {len(BUILDER.VIDEO_SLOTS)} (one per demo slot)")
+        for video in videos:  # a demo video is allowed only as the builder writes it: to be paused, silent, not preloaded and with a poster
+            tagtext = re.match(r"<video\b[^>]*>", video).group(0)
+            for need in ("controls", "muted", "playsinline", 'preload="none"'):
+                if not re.search(r"(?<![\w-])" + re.escape(need) + r"(?![\w-])", tagtext):
+                    add(f"a <video> lacks {need}: {tagtext[:70]}")
+            for banned in ("autoplay", "loop"):
+                if re.search(r"(?<![\w-])" + banned + r"(?![\w-])", tagtext):
+                    add(f"a <video> has {banned}: moving content that starts or repeats by itself needs a way to stop it")
+            if not re.search(r'\baria-label="[^"]+"', tagtext):
+                add("a <video> has no aria-label")
+            if not (re.search(r'\bwidth="\d+"', tagtext) and re.search(r'\bheight="\d+"', tagtext)):
+                add("a <video> has no width and height")
+            poster = re.search(r'\bposter="([^"]+)"', tagtext)
+            if not poster:
+                add("a <video> has no poster")
+            elif not (root / poster.group(1)).is_file():
+                add(f"the poster {poster.group(1)} does not exist")
+            sources = re.findall(r"<source\b[^>]*>", video)
+            if len(sources) != 1:
+                add("a <video> needs exactly one <source>")
+            for source in sources:
+                src = re.search(r'\bsrc="(video/[^"]+\.mp4)"', source)
+                if not src or 'type="video/mp4"' not in source:
+                    add(f"a <source> must be an mp4 under video/: {source[:70]}")
+                elif not (root / src.group(1)).is_file():
+                    add(f"the video {src.group(1)} does not exist")
         if not re.search(r"<title>[^<]+</title>", text):
             add("no <title>")
         if not re.search(r'<meta name="description" content="[^"]{20,}"', text):

@@ -144,6 +144,103 @@ class OutputTests(BuildCase):
             path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         bl.write_assets(self.root)
 
+    def videos(self, tags=("en-US", "pt-BR", "es-MX"), slots=("reading", "guided"), **entry):
+        (self.root / "video" / "release").mkdir(parents=True, exist_ok=True)
+        (self.root / "img" / "release").mkdir(parents=True, exist_ok=True)
+        for slot in slots:
+            (self.root / "video" / "release" / f"{slot}.mp4").write_bytes(b"mp4")
+            shutil.copyfile(self.root / "img" / "poster_guided.webp", self.root / "img" / "release" / f"{slot}.webp")
+        for tag in tags:
+            path = self.root / "_src" / "content" / f"{tag}.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            data["videos"] = {slot: {"src": f"release/{slot}.mp4", "poster": f"release/{slot}.webp", **entry} for slot in slots}
+            path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        bl.write_assets(self.root)
+
+    def test_without_videos_the_media_is_the_img_the_template_always_had(self):
+        page = self.pages()["index.html"]
+        self.assertNotIn("<video", page)
+        self.assertIn('<img src="img/poster_reading_en.webp" width="600" height="1300" alt="Reading mode" loading="lazy" decoding="async">', page)
+
+    def test_a_video_replaces_its_image_with_a_silent_paused_player_that_has_a_poster(self):
+        self.videos()
+        page = self.pages()["index.html"]
+        self.assertIn('<video controls muted playsinline preload="none" poster="img/release/reading.webp" width="600" height="1300" '
+                      'aria-label="Reading mode"><source src="video/release/reading.mp4" type="video/mp4"></video>', page)
+        self.assertNotIn("autoplay", page.replace("autoplay_", ""))
+        self.assertNotIn('src="img/poster_reading_en.webp"', page)
+
+    def test_a_video_for_one_slot_leaves_the_other_slot_an_image(self):
+        self.videos(slots=("guided",))
+        page = self.pages()["index.html"]
+        self.assertEqual(page.count("<video"), 1)
+        self.assertIn('<img src="img/poster_reading_en.webp"', page)
+
+    def test_the_poster_is_in_the_asset_manifest_with_its_real_size(self):
+        self.videos()
+        sizes = json.loads((self.root / "_src" / "assets.json").read_text())
+        self.assertEqual(sizes["release/reading.webp"], [600, 1300])
+
+    def test_videos_must_be_in_every_language_or_none(self):
+        self.videos(tags=("en-US",))
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("the videos differ between the languages", str(ctx.exception))
+
+    def test_a_video_entry_must_be_plain(self):
+        self.videos()
+        bad_entries = [{"src": 'x".mp4', "poster": "release/reading.webp"}, {"src": "../x.mp4", "poster": "release/reading.webp"},
+                       {"src": "release/../../x.mp4", "poster": "release/reading.webp"}, {"src": "release/reading.mp4", "poster": "release/../x.webp"},
+                       {"src": "release/reading.mov", "poster": "release/reading.webp"}, {"src": "release/reading.mp4", "poster": "x.gif"},
+                       {"src": "release/reading.mp4"}, {"src": "release/reading.mp4", "poster": "release/reading.webp", "autoplay": True}]
+        for entry in bad_entries:
+            for tag in ("en-US", "pt-BR", "es-MX"):
+                path = self.root / "_src" / "content" / f"{tag}.json"
+                data = json.loads(path.read_text(encoding="utf-8"))
+                data["videos"]["reading"] = entry
+                path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            with self.assertRaises(bl.BuildError) as ctx:
+                self.pages()
+            self.assertIn("videos.reading must be", str(ctx.exception), entry)
+
+    def test_an_unknown_video_slot_is_refused(self):
+        self.videos(slots=("hero",))
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("'videos' must be an object of reading, guided", str(ctx.exception))
+
+    def test_a_missing_video_poster_or_manifest_entry_is_named(self):
+        self.videos()
+        (self.root / "video" / "release" / "reading.mp4").unlink()
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("video/release/reading.mp4 does not exist", str(ctx.exception))
+        self.videos()
+        (self.root / "img" / "release" / "reading.webp").unlink()
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("img/release/reading.webp does not exist", str(ctx.exception))
+        self.videos()
+        path = self.root / "_src" / "assets.json"
+        sizes = json.loads(path.read_text())
+        del sizes["release/reading.webp"]
+        path.write_text(json.dumps(sizes))
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("img/release/reading.webp is not in _src/assets.json", str(ctx.exception))
+
+    def test_a_jpeg_poster_has_its_size_read_from_the_file(self):
+        jpeg = self.root / "img" / "p.jpg"
+        # a minimal JPEG header: SOI, an APP0 segment, then SOF0 with height 1390 and width 640
+        jpeg.write_bytes(b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00" + b"\xff\xc0\x00\x0b\x08\x05\x6e\x02\x80\x01\x01\x11\x00")
+        self.assertEqual(bl.image_size(jpeg), (640, 1390))
+        for marker in (b"\xc1", b"\xc2"):  # extended and progressive JPEGs
+            jpeg.write_bytes(b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00" + b"\xff" + marker + b"\x00\x0b\x08\x05\x6e\x02\x80\x01\x01\x11\x00")
+            self.assertEqual(bl.image_size(jpeg), (640, 1390))
+        with self.assertRaises(bl.BuildError):
+            jpeg.write_bytes(b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x00\x00\x01\x00\x01\x00\x00")
+            bl.image_size(jpeg)
+
     def test_a_page_without_art_has_no_art_attribute_and_the_css_rule_is_inert(self):
         for page in self.pages().values():
             self.assertNotIn("data-art", page.replace(".hero[data-art]", "").replace(".cta-section[data-art]", ""))

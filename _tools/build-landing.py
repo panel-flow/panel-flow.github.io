@@ -42,6 +42,10 @@ SLOTS = ("hero", "ai", "trans", "reading", "guided")
 # optional decorative art: a background of the hero and of the closing section, under a fixed dark overlay (see landing.html)
 ART_SLOTS = ("hero", "cta")
 ART_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_./@-]*\.(?:webp|png|jpe?g)")
+# optional demo videos for the two sections that show the app in use: {"src": "release/reading-en-US.mp4", "poster": "release/reading-en-US.jpg"}
+# under `videos` in the content (src is under video/, poster under img/). No autoplay: a control to pause is needed for moving content.
+VIDEO_SLOTS = ("reading", "guided")
+VIDEO_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_./@-]*\.mp4")
 
 
 class BuildError(ValueError):
@@ -49,7 +53,7 @@ class BuildError(ValueError):
 
 
 def image_size(path):
-    """(width, height) of a PNG or WebP, from the file header."""
+    """(width, height) of a PNG, WebP or JPEG, from the file header."""
     data = Path(path).read_bytes()[:40]
     if data[:8] == b"\x89PNG\r\n\x1a\n":
         return struct.unpack(">II", data[16:24])
@@ -63,7 +67,19 @@ def image_size(path):
             return 1 + (b[0] | (b[1] & 0x3F) << 8), 1 + ((b[1] >> 6) | b[2] << 2 | (b[3] & 0xF) << 10)
         if kind == b"VP8X":
             return 1 + int.from_bytes(data[24:27], "little"), 1 + int.from_bytes(data[27:30], "little")
-    raise BuildError(f"{path}: not a PNG or WebP image")
+    if data[:2] == b"\xff\xd8":  # JPEG: the size is in the first start-of-frame segment
+        raw = Path(path).read_bytes()
+        i = 2
+        while i + 9 < len(raw):
+            if raw[i] != 0xFF:
+                i += 1
+                continue
+            marker = raw[i + 1]
+            if marker in (0xC0, 0xC1, 0xC2):
+                height, width = struct.unpack(">HH", raw[i + 5:i + 9])
+                return width, height
+            i += 2 + struct.unpack(">H", raw[i + 2:i + 4])[0]
+    raise BuildError(f"{path}: not a PNG, WebP or JPEG image")
 
 
 def load(root):
@@ -101,6 +117,35 @@ def art_attributes(slot, own, root, assets):
     if name not in assets:
         raise BuildError(f"art_{slot}: img/{name} is not in _src/assets.json (run --assets)")
     return f' data-art style="--art:url(img/{name})"'
+
+
+def media(tag, slot, own, root, assets):
+    """The image of a slot, or its demo video when the content has one (poster, controls, no autoplay). With no video this is
+    exactly the <img> the template always had, so a page without videos is the page it was before the slot existed."""
+    images = own.get("images") or {}
+    video = (own.get("videos") or {}).get(slot)
+    if video is not None:
+        if (not isinstance(video, dict) or set(video) != {"src", "poster"} or not VIDEO_NAME.fullmatch(str(video["src"]))
+                or not ART_NAME.fullmatch(str(video["poster"])) or ".." in (str(video["src"]) + "/" + str(video["poster"])).split("/")):
+            raise BuildError(f"{tag}: videos.{slot} must be {{src: a plain .mp4 path, poster: a plain image path}}")
+        if not (Path(root) / "video" / video["src"]).is_file():
+            raise BuildError(f"{tag}: video/{video['src']} does not exist")
+        if not (Path(root) / "img" / video["poster"]).is_file():
+            raise BuildError(f"{tag}: img/{video['poster']} does not exist")
+        if video["poster"] not in assets:
+            raise BuildError(f"{tag}: img/{video['poster']} is not in _src/assets.json (run --assets)")
+        width, height = assets[video["poster"]]
+        return (f'<video controls muted playsinline preload="none" poster="img/{video["poster"]}" width="{width}" height="{height}" '
+                f'aria-label="{esc(own[f"alt_{slot}"])}"><source src="video/{video["src"]}" type="video/mp4"></video>')
+    name = images.get(slot)
+    if not name:
+        raise BuildError(f"{tag}: no image for the slot '{slot}'")
+    if not (Path(root) / "img" / name).is_file():
+        raise BuildError(f"{tag}: img/{name} does not exist")
+    if name not in assets:
+        raise BuildError(f"{tag}: img/{name} is not in _src/assets.json (run --assets)")
+    return (f'<img src="img/{name}" width="{assets[name][0]}" height="{assets[name][1]}" alt="{esc(own[f"alt_{slot}"])}" '
+            'loading="lazy" decoding="async">')
 
 
 def alternates():
@@ -147,6 +192,7 @@ def render(tag, template, content, facts, assets, root):
         "json_ld": json_ld(tag, own), "lang_switcher": lang_switcher(tag, own), "legal_nav": legal_nav(tag, own),
         "store_url": STORE_URL, "year": own["year"],
         **{f"art_{slot}": art_attributes(slot, own, root, assets) for slot in ART_SLOTS},
+        **{f"media_{slot}": media(tag, slot, own, root, assets) for slot in VIDEO_SLOTS},
     }
 
     def sub(m):
@@ -181,7 +227,7 @@ def check_sources(content):
         for extra in sorted(k - reference):
             problems.append(f"{tag}: has the key '{extra}', which en-US does not")
         for key, value in content[tag].items():
-            if key != "images" and (not isinstance(value, str) or not value.strip()):
+            if key not in ("images", "videos") and (not isinstance(value, str) or not value.strip()):
                 problems.append(f"{tag}: '{key}' is empty")
         for slot in SLOTS:
             if not (content[tag].get("images") or {}).get(slot):
@@ -189,6 +235,13 @@ def check_sources(content):
         for key in sorted(k for k in (content[tag].get("images") or {}) if k not in SLOTS):
             if key not in {f"art_{s}" for s in ART_SLOTS}:
                 problems.append(f"{tag}: '{key}' is not an image slot or an art slot")
+        videos = content[tag].get("videos")
+        if videos is not None:
+            if not isinstance(videos, dict) or set(videos) - set(VIDEO_SLOTS):
+                problems.append(f"{tag}: 'videos' must be an object of {', '.join(VIDEO_SLOTS)}")
+    slots = {tag: sorted((c.get("videos") or {}) if isinstance(c.get("videos") or {}, dict) else []) for tag, c in content.items()}
+    if len({tuple(v) for v in slots.values()}) > 1:
+        problems.append("the videos differ between the languages: " + "; ".join(f"{t}: {v}" for t, v in slots.items()))
     art = {tag: {k for k in (c.get("images") or {}) if k.startswith("art_")} for tag, c in content.items()}
     if len({frozenset(v) for v in art.values()}) > 1:
         problems.append("the art slots differ between the languages: " + "; ".join(f"{t}: {sorted(v)}" for t, v in art.items()))
@@ -209,7 +262,9 @@ def build(root=ROOT):
 
 def images_used(root=ROOT):
     content = load(root)[1]
-    return sorted({name for c in content.values() for name in (c.get("images") or {}).values()})
+    names = {name for c in content.values() for name in (c.get("images") or {}).values()}
+    names |= {v["poster"] for c in content.values() for v in (c.get("videos") or {}).values() if isinstance(v, dict) and "poster" in v}
+    return sorted(names)
 
 
 def write_assets(root=ROOT):
