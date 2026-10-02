@@ -171,6 +171,10 @@ def check_landing(root, base):
                 add(f"an <img> has no alt text: {img[:60]}")
             if not (re.search(r'\bwidth="\d+"', img) and re.search(r'\bheight="\d+"', img)):
                 add(f"an <img> has no width and height: {img[:60]}")
+        for ref in re.findall(r"url\(([^)]+)\)", text):  # decorative art is a CSS background: no <img>, so no alt; the file must exist
+            ref = ref.strip("'\"")
+            if not re.match(r"^(?:[a-z][a-z0-9+.-]*:|#|//)", ref) and not (root / ref.split("?", 1)[0]).is_file():
+                add(f"url({ref}) points to a file that does not exist")
         ld = re.search(r'<script type="application/ld\+json">(.*?)</script>', text, re.S)
         try:
             data = json.loads(ld.group(1)) if ld else None

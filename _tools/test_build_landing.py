@@ -134,6 +134,73 @@ class OutputTests(BuildCase):
             self.pages()
         self.assertIn("es-MX: missing the key 'stat2_value'", str(ctx.exception))
 
+    def art(self, tags=("en-US", "pt-BR", "es-MX"), name="release/art-hero.webp", key="art_hero"):
+        (self.root / "img" / "release").mkdir(exist_ok=True)
+        shutil.copyfile(self.root / "img" / "poster_guided.webp", self.root / "img" / name)
+        for tag in tags:
+            path = self.root / "_src" / "content" / f"{tag}.json"
+            data = json.loads(path.read_text(encoding="utf-8"))
+            data["images"] = {**data["images"], key: name}
+            path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        bl.write_assets(self.root)
+
+    def test_a_page_without_art_has_no_art_attribute_and_the_css_rule_is_inert(self):
+        for page in self.pages().values():
+            self.assertNotIn("data-art", page.replace(".hero[data-art]", "").replace(".cta-section[data-art]", ""))
+            self.assertIn('<section class="hero">', page)
+            self.assertIn('<section class="section cta-section">', page)
+
+    def test_art_puts_a_background_behind_its_section_only(self):
+        self.art()
+        page = self.pages()["index.html"]
+        self.assertIn('<section class="hero" data-art style="--art:url(img/release/art-hero.webp)">', page)
+        self.assertIn('<section class="section cta-section">', page)  # no art_cta: that section is as before
+        self.assertIn("rgba(10,10,12,0.82)", page)  # the dark overlay the text contrast relies on
+        self.assertNotIn("<img src=\"img/release/art-hero", page)  # decorative: a CSS background, not an <img> without alt
+
+    def test_the_art_file_is_in_the_asset_manifest(self):
+        self.art()
+        self.assertIn("release/art-hero.webp", json.loads((self.root / "_src" / "assets.json").read_text()))
+
+    def test_art_must_be_in_every_language_or_none(self):
+        self.art(tags=("en-US",))
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("the art slots differ between the languages", str(ctx.exception))
+
+    def test_an_unknown_image_key_is_refused(self):
+        self.art(key="art_footer")
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("'art_footer' is not an image slot or an art slot", str(ctx.exception))
+
+    def test_an_art_name_cannot_break_out_of_the_attribute_or_the_folder(self):
+        self.art()
+        for bad in ('x".webp', "../_src/facts.json", "release/a b.webp", "x.webp);color:red", "a/../b.webp"):
+            for tag in ("en-US", "pt-BR", "es-MX"):
+                path = self.root / "_src" / "content" / f"{tag}.json"
+                data = json.loads(path.read_text(encoding="utf-8"))
+                data["images"]["art_hero"] = bad
+                path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+            with self.assertRaises(bl.BuildError) as ctx:
+                self.pages()
+            self.assertIn("is not a plain image path", str(ctx.exception), bad)
+
+    def test_art_that_is_missing_or_not_in_the_manifest_is_named(self):
+        self.art()
+        (self.root / "img" / "release" / "art-hero.webp").unlink()
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("img/release/art-hero.webp does not exist", str(ctx.exception))
+        self.art()
+        path = self.root / "_src" / "assets.json"
+        sizes = json.loads(path.read_text())
+        del sizes["release/art-hero.webp"]  # every other image is still listed: only the art is missing
+        path.write_text(json.dumps(sizes))
+        with self.assertRaises(bl.BuildError) as ctx:
+            self.pages()
+        self.assertIn("art_hero: img/release/art-hero.webp is not in _src/assets.json", str(ctx.exception))
+
     def test_quotes_in_a_text_cannot_break_an_attribute(self):
         self.content("en-US", meta_description='A "quoted" <b>description</b> & more')
         page = self.pages()["index.html"]

@@ -39,6 +39,9 @@ LEGAL_STYLE = ('style="margin-top:8px;display:flex;flex-wrap:wrap;justify-conten
 LINK_STYLE = ('style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color=\'#E8566C\'" '
               'onmouseout="this.style.color=\'\'"')
 SLOTS = ("hero", "ai", "trans", "reading", "guided")
+# optional decorative art: a background of the hero and of the closing section, under a fixed dark overlay (see landing.html)
+ART_SLOTS = ("hero", "cta")
+ART_NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_./@-]*\.(?:webp|png|jpe?g)")
 
 
 class BuildError(ValueError):
@@ -85,6 +88,21 @@ def with_facts(text, facts):
     return re.sub(r"\{(\w+)\}", sub, text)
 
 
+def art_attributes(slot, own, root, assets):
+    """The attributes that put the art of a slot behind its section: empty when the content has none, so a page without art is
+    exactly the page it was before the slot existed."""
+    name = (own.get("images") or {}).get(f"art_{slot}")
+    if not name:
+        return ""
+    if not ART_NAME.fullmatch(name) or ".." in name.split("/"):
+        raise BuildError(f"art_{slot}: '{name}' is not a plain image path")
+    if not (Path(root) / "img" / name).is_file():
+        raise BuildError(f"art_{slot}: img/{name} does not exist")
+    if name not in assets:
+        raise BuildError(f"art_{slot}: img/{name} is not in _src/assets.json (run --assets)")
+    return f' data-art style="--art:url(img/{name})"'
+
+
 def alternates():
     tags = [f'<link rel="alternate" hreflang="{tag}" href="{PAGES[tag]["url"]}">' for tag in ("en-US", "pt-BR", "es-MX")]
     tags.append(f'<link rel="alternate" hreflang="x-default" href="{PAGES["en-US"]["url"]}">')
@@ -128,6 +146,7 @@ def render(tag, template, content, facts, assets, root):
                                             for t, p in PAGES.items() if t != tag),
         "json_ld": json_ld(tag, own), "lang_switcher": lang_switcher(tag, own), "legal_nav": legal_nav(tag, own),
         "store_url": STORE_URL, "year": own["year"],
+        **{f"art_{slot}": art_attributes(slot, own, root, assets) for slot in ART_SLOTS},
     }
 
     def sub(m):
@@ -167,6 +186,12 @@ def check_sources(content):
         for slot in SLOTS:
             if not (content[tag].get("images") or {}).get(slot):
                 problems.append(f"{tag}: the slot '{slot}' has no image")
+        for key in sorted(k for k in (content[tag].get("images") or {}) if k not in SLOTS):
+            if key not in {f"art_{s}" for s in ART_SLOTS}:
+                problems.append(f"{tag}: '{key}' is not an image slot or an art slot")
+    art = {tag: {k for k in (c.get("images") or {}) if k.startswith("art_")} for tag, c in content.items()}
+    if len({frozenset(v) for v in art.values()}) > 1:
+        problems.append("the art slots differ between the languages: " + "; ".join(f"{t}: {sorted(v)}" for t, v in art.items()))
     return problems
 
 
