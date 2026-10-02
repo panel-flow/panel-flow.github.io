@@ -130,6 +130,16 @@ class LandingCheckTests(unittest.TestCase):
     def test_the_real_site_passes(self):
         self.assertEqual(self.problems(), [])
 
+    def test_art_behind_a_section_must_exist(self):
+        self.edit("index.html", '<section class="hero">', '<section class="hero" data-art style="--art:url(img/release/missing.webp)">')
+        self.has("index.html: url(img/release/missing.webp) points to a file that does not exist")
+        self.edit("index.html", "url(img/release/missing.webp)", "url(img/og-card.png)")  # a file that is there
+        self.assertFalse([p for p in self.problems() if "points to a file that does not exist" in p])
+
+    def test_a_remote_or_data_url_in_the_css_is_not_checked_as_a_local_file(self):
+        self.edit("index.html", "</body>", '<p style="background:url(https://example.com/x.png)"></p><p style="background:url(data:image/png;base64,AAAA)"></p></body>')
+        self.assertFalse([p for p in self.problems() if "points to a file that does not exist" in p])
+
     def test_the_landing_pages_are_checked_against_the_build(self):
         self.edit("index.html", "</body>", "<!-- by hand --></body>")
         self.has("index.html: differs from what _src/ builds")
