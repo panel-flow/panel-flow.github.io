@@ -36,7 +36,7 @@ PAGES = {
 SWITCHER_ORDER = ("pt-BR", "en-US", "es-MX")  # the order of the old switcher
 FACTS = ("min_ios", "year")
 LEGAL_STYLE = ('style="margin-top:8px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px"')
-LINK_STYLE = ('style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color=\'#E8566C\'" '
+LINK_STYLE = ('style="color:var(--text-muted);font-size:0.8rem;transition:color 0.3s" onmouseover="this.style.color=\'#E54F6D\'" '
               'onmouseout="this.style.color=\'\'"')
 SLOTS = ("hero", "ai", "trans", "reading", "guided")
 # optional decorative art: a background of the hero and of the closing section, under a fixed dark overlay (see landing.html)
