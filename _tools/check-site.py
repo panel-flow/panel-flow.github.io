@@ -4,10 +4,11 @@
     python3 _tools/check-site.py [--live] [--base URL]
 
 Offline (default), run from anywhere: reads the HTML files of the repository and checks the nine pages the app links to
-(privacy-policy-, terms- and support- plus en, es-MX or pt-BR), the canonical and hreflang links, Open Graph tags, local
-links and images, leftover [[PLACEHOLDER]] markers, references to the old address, the contact email on the support
-pages, the three generated landing pages (see build-landing.py: they must equal what _src/ builds, one h1, hreflang, canonical, alt and
-size on every image, no leftover i18n), the sitemap and robots.txt. Prints one line per problem and `PASS` or `FAIL`; exit code 1 on FAIL.
+(privacy-policy-, terms- and support- plus en, es-MX or pt-BR; generated, so they must equal what build-legal.py makes of
+_src/legal.json), the canonical and hreflang links, Open Graph tags, local links and images, leftover [[PLACEHOLDER]]
+markers, references to the old address, the contact email on the support pages, the three generated landing pages (see
+build-landing.py: they must equal what _src/ builds, one h1, hreflang, canonical, alt and size on every image, no leftover
+i18n), the sitemap and robots.txt. Prints one line per problem and `PASS` or `FAIL`; exit code 1 on FAIL.
 
 --live also fetches the landing and the nine pages from --base (default https://panel-flow.github.io/) and expects HTTP 200
 plus the expected canonical link, and the contact email on the support pages.
@@ -30,14 +31,15 @@ PAGES = [f"{g}-{k}.html" for g in GROUPS for k in LOCALES]
 TITLE_MAX, DESC_MAX, LANDING_DESC_MIN = 60, 155, 70  # what a search result shows before it cuts; the landing says more than a legal page
 
 
-def _builder():
-    spec = importlib.util.spec_from_file_location("build_landing", Path(__file__).resolve().parent / "build-landing.py")
+def _builder(name="build-landing"):
+    spec = importlib.util.spec_from_file_location(name.replace("-", "_"), Path(__file__).resolve().parent / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
 BUILDER = _builder()
+LEGAL_BUILDER = _builder("build-legal")
 LANDING = {tag: page["file"] for tag, page in BUILDER.PAGES.items()}  # tag -> file; en-US is the root
 STORE_ID = BUILDER.STORE_URL.rsplit("/id", 1)[1]
 
@@ -129,6 +131,7 @@ def check_offline(root=ROOT, base=DEFAULT_BASE, landing=True):
 
     if landing:
         problems += check_landing(root, base)
+        problems += [f"legal: {p}" for p in LEGAL_BUILDER.check(root)]
 
     sitemap = root / "sitemap.xml"
     if not sitemap.is_file():
