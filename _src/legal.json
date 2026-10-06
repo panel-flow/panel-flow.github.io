@@ -1,0 +1,459 @@
+{
+ "contact": "sciasxp@gmail.com",
+ "effective": {
+  "privacy-policy": "2026-09-28",
+  "terms": "2026-10-01"
+ },
+ "locales": {
+  "en-US": {
+   "home": "Panel Flow home",
+   "language": "Language",
+   "footer": "Legal and support",
+   "contact": "Contact",
+   "og_image_alt": "Panel Flow, a smart comic and manga reader, shown with three app screenshots",
+   "pages": {
+    "privacy-policy": {
+     "title": "Privacy Policy",
+     "description": "How Panel Flow handles information on iPhone, iPad, and Mac.",
+     "eyebrow": "Panel Flow privacy information",
+     "intro": "How Panel Flow handles information on iPhone, iPad, and Mac.",
+     "effective": "Effective {date}",
+     "sections": [
+      {
+       "id": "scope",
+       "title": "Scope and contact",
+       "html": "<p>This policy applies to Panel Flow for iOS, iPadOS, and macOS. It describes the app and the choices you make when using its optional online features.</p><p>For privacy questions or requests, contact <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>.</p>"
+      },
+      {
+       "id": "library",
+       "title": "Your library and files",
+       "html": "<p>The library, reading activity, preferences, and imported or downloaded comic files are kept on your device for normal app use. Panel Flow does not send comic page images or file contents to a Panel Flow-operated content server.</p><p>Some features connect directly to services you choose, as described below. Those services receive the requests needed to provide the feature.</p><ul><li>When you enable iCloud library sync, Panel Flow sends library records to your private iCloud database: publication and chapter titles and metadata, source identifiers, reading status and position, dates, reading-direction settings, collection names and rules, and collection membership/order.</li><li>The sync records do not contain comic or page image file bytes. iCloud sync is optional and off until you enable it in the app. Apple processes iCloud data under your Apple Account and Apple privacy terms.</li></ul>"
+      },
+      {
+       "id": "analytics",
+       "title": "Optional analytics",
+       "html": "<p>Analytics is off by default. If you turn it on in Settings → Privacy, Panel Flow sends usage and reliability events to TelemetryDeck. You can turn it off at any time in the same setting; that stops future app events from being sent. It does not remove events already received by the provider.</p><p>Events use predefined action names and limited categories, such as feature or operation type, result, and coarse duration or page-count ranges. They do not include comic titles, chapter titles, page content, file names, URLs, search text, account tokens, or free-form error messages.</p><p>The TelemetryDeck SDK also sends a pseudonymous identifier scoped to an app installation, event time rounded to the nearest hour, and technical app/device details such as app version, operating-system version, and device type. A network request necessarily reaches TelemetryDeck from your connection; TelemetryDeck states that it does not store IP addresses. See TelemetryDeck’s <a href=\"https://telemetrydeck.com/docs/guides/privacy-faq/\">Privacy FAQ</a> and <a href=\"https://telemetrydeck.com/privacy/\">Privacy Policy</a>. As of September 28, 2026, its FAQ says there is no fixed deletion schedule for cold-storage events and estimates 7–10 years without guaranteeing that period.</p><p>Analytics is used to understand app usage and reliability, not for advertising or cross-app tracking.</p>"
+      },
+      {
+       "id": "third",
+       "title": "Online sources and account integrations",
+       "html": "<p>If you browse or search an online catalog, use an OPDS catalog, or connect a Komga, Kavita, or other server, the selected provider receives the request and the network information needed to answer it. Searches may contain the text you enter. Each provider controls its own handling and retention.</p><p>If you connect AniList or MyAnimeList, authentication tokens are stored in the operating-system Keychain. When you search, link a title, or sync reading status, the relevant query, selected title, account authorization, or progress is sent directly to that service. AniList and MyAnimeList apply their own privacy policies. Panel Flow does not include these values in its analytics events.</p>"
+      },
+      {
+       "id": "openai",
+       "title": "Optional voice from OpenAI",
+       "html": "<p>If you add your own OpenAI API key and choose the OpenAI voice, Panel Flow sends the text to be read aloud, together with the selected voice and speed, to OpenAI (api.openai.com) to generate speech. The key is stored in the operating-system Keychain and is sent only to OpenAI. The generated audio is cached on your device.</p><p>OpenAI processes the request under its own terms and privacy policy, and usage is billed to your OpenAI account. This feature is off until you add a key. Panel Flow does not include this text in its analytics events. Reading aloud with Apple’s built-in speech does not use OpenAI.</p>"
+      },
+      {
+       "id": "system",
+       "title": "Apple system features and purchases",
+       "html": "<p>When you use Apple-provided features such as translation, speech, or system intelligence, the relevant text or other input is processed by the Apple framework and platform configuration used for that feature. Processing and availability can vary by operating-system version and settings. Review Apple’s <a href=\"https://www.apple.com/legal/privacy/\">Privacy Policy</a> and your device settings.</p><p>Apple handles App Store transactions and related account information. Panel Flow does not receive your Apple Account password or payment-card details.</p>"
+      },
+      {
+       "id": "choices",
+       "title": "Your choices and data management",
+       "html": "<p>You can keep analytics off or disable it in Settings → Privacy. You can disable iCloud sync in the app and manage iCloud storage through Apple’s settings. You can delete library items or files using the app and your device’s file controls.</p><p>To disconnect AniList or MyAnimeList, sign out in Panel Flow; you can also revoke the app’s authorization with the service. Data already sent to a third-party service or iCloud is subject to that provider’s controls and retention rules. Contact us for questions about a support email you sent.</p>"
+      },
+      {
+       "id": "site",
+       "title": "This website and support",
+       "html": "<p>These policy pages are static and do not load advertising, analytics scripts, web fonts, or embedded third-party content. The site is hosted by GitHub Pages; GitHub may process connection data under its <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">privacy statement</a>.</p><p>If you email support, the information in your message and reply is processed by the email providers involved so we can respond. Please do not include passwords, access tokens, or comic files unless support specifically asks for a safe diagnostic sample.</p>"
+      },
+      {
+       "id": "updates",
+       "title": "Changes",
+       "html": "<p>We may update this policy when app features or data handling change. The date below identifies the latest revision.</p>"
+      }
+     ]
+    },
+    "terms": {
+     "title": "Terms of Use",
+     "description": "The terms for using Panel Flow and this website.",
+     "eyebrow": "Panel Flow terms",
+     "intro": "The rules for using Panel Flow, in plain language.",
+     "effective": "Effective {date}",
+     "sections": [
+      {
+       "id": "about",
+       "title": "About these terms",
+       "html": "<p>These Terms of Use apply to your use of Panel Flow, the Panel Flow app, and this website. Your license to use the app is granted under Apple's standard Licensed Application End User License Agreement (the \"Apple EULA\") unless Apple and Panel Flow agree otherwise.</p>\n<p>These terms explain how the app and the services around it may be used. If they conflict with the Apple EULA about your license to the app, the Apple EULA prevails.</p>"
+      },
+      {
+       "id": "what",
+       "title": "What Panel Flow is",
+       "html": "<p>Panel Flow is a reader for comic and manga files and for content from sources you choose. It does not host, sell or distribute comics or manga.</p>"
+      },
+      {
+       "id": "content",
+       "title": "Your content and your responsibility",
+       "html": "<p>You are responsible for the files you import and the content you read. Use Panel Flow only with content you have the right to access and use, and respect the copyright and the terms of the people and services that provide it.</p>"
+      },
+      {
+       "id": "services",
+       "title": "Third-party services",
+       "html": "<p>Some features connect directly to services you choose, such as OPDS catalogs, Komga and Kavita servers, online catalogs such as the Internet Archive and MangaDex, AniList, MyAnimeList, iCloud and, if you add your own API key, OpenAI for voice.</p>\n<p>Those services are not operated by Panel Flow. Their own terms and privacy policies apply, they may change or stop at any time, and any cost they charge (for example, OpenAI usage on your own key) is between you and them.</p>"
+      },
+      {
+       "id": "assisted",
+       "title": "Assisted reading",
+       "html": "<p>Panel detection, text recognition, translation and speech are automated and can make mistakes. Do not rely on them where an error would matter.</p>"
+      },
+      {
+       "id": "use",
+       "title": "Acceptable use",
+       "html": "<p>Do not use Panel Flow to infringe copyright or other rights, to break the terms of a service you connect to, or to interfere with how that service works. Do not try to extract the app's source code or bypass its protections, except where the law allows it.</p>"
+      },
+      {
+       "id": "privacy",
+       "title": "Privacy",
+       "html": "<p>The <a href=\"privacy-policy-en.html\">Privacy Policy</a> explains what data stays on your device and what is sent to the services you enable.</p>"
+      },
+      {
+       "id": "liability",
+       "title": "No warranty and limits of liability",
+       "html": "<p>Panel Flow is provided \"as is\" and \"as available\". To the extent the law allows, we do not promise that it will be uninterrupted or free of errors, and we are not liable for indirect or consequential damages or for loss of data, content or access to a third-party service.</p>\n<p>Nothing in these terms limits rights you have under the law that cannot be waived.</p>"
+      },
+      {
+       "id": "changes",
+       "title": "Changes",
+       "html": "<p>We may update these terms when the app or the law changes. The date above identifies the latest revision. Continuing to use Panel Flow after a change means you accept the updated terms.</p>"
+      },
+      {
+       "id": "law",
+       "title": "Governing law",
+       "html": "<p>These terms are governed by the laws of the Federative Republic of Brazil.</p>"
+      },
+      {
+       "id": "contact",
+       "title": "Contact",
+       "html": "<p>Questions about these terms: <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>. You can also use the <a href=\"support-en.html\">support page</a>.</p>"
+      }
+     ]
+    },
+    "support": {
+     "title": "Support",
+     "description": "Get help with Panel Flow: how to contact us, what to include and quick answers.",
+     "eyebrow": "Panel Flow support",
+     "intro": "Questions, problems or feedback about Panel Flow? Write to us.",
+     "sections": [
+      {
+       "id": "contact",
+       "title": "Contact us",
+       "html": "<p>Email <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>. We read every message and reply by email.</p>\n<p>To help us answer faster, include:</p>\n<ul><li>The Panel Flow version and your iOS or iPadOS version.</li><li>Your device model.</li><li>What you did, what you expected and what happened.</li><li>A screenshot, if it helps.</li></ul>\n<p>Please do not include passwords, API keys, access tokens or comic files unless we ask for a safe sample.</p>"
+      },
+      {
+       "id": "answers",
+       "title": "Quick answers",
+       "html": "<p><strong>Which files can I import?</strong><br>Panel Flow opens comic and manga files in CBZ, ZIP, CBR, CB7, CBT and PDF format.</p>\n<p><strong>Is my library stored online?</strong><br>No. Your library, reading progress, preferences and imported files stay on your device. iCloud sync is optional and stays off until you turn it on in Settings.</p>\n<p><strong>Are usage analytics on?</strong><br>No. Anonymous usage analytics are off by default. You can turn them on or off in Settings → Privacy.</p>\n<p><strong>Do I need an OpenAI account?</strong><br>No. The OpenAI voice is optional and uses your own API key, which you add in Settings → OpenAI Speech. Reading aloud also works with Apple's built-in speech, without any key.</p>\n<p><strong>How do I ask about my data?</strong><br>Email us. The <a href=\"privacy-policy-en.html\">privacy policy</a> explains what Panel Flow keeps and where it goes.</p>"
+      },
+      {
+       "id": "policies",
+       "title": "Policies",
+       "html": "<p>Read the <a href=\"privacy-policy-en.html\">Privacy Policy</a> and the <a href=\"terms-en.html\">Terms of Use</a>.</p>"
+      }
+     ]
+    }
+   }
+  },
+  "es-MX": {
+   "home": "Inicio de Panel Flow",
+   "language": "Idioma",
+   "footer": "Legal y soporte",
+   "contact": "Contacto",
+   "og_image_alt": "Panel Flow, un lector inteligente de cómics y manga, con tres capturas de la app",
+   "pages": {
+    "privacy-policy": {
+     "title": "Política de privacidad",
+     "description": "Cómo Panel Flow trata la información en iPhone, iPad y Mac.",
+     "eyebrow": "Información de privacidad de Panel Flow",
+     "intro": "Cómo Panel Flow trata la información en iPhone, iPad y Mac.",
+     "effective": "Vigente desde el {date}",
+     "sections": [
+      {
+       "id": "scope",
+       "title": "Alcance y contacto",
+       "html": "<p>Esta política se aplica a Panel Flow para iOS, iPadOS y macOS. Describe la app y las opciones disponibles al usar sus funciones en línea opcionales.</p><p>Para consultas o solicitudes de privacidad, escribe a <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>.</p>"
+      },
+      {
+       "id": "library",
+       "title": "Biblioteca y archivos",
+       "html": "<p>La biblioteca, la actividad de lectura, las preferencias y los archivos de cómics importados o descargados se guardan en el dispositivo para el uso normal de la app. Panel Flow no envía imágenes de páginas ni el contenido de archivos a un servidor de contenido operado por Panel Flow.</p><p>Algunas funciones se conectan directamente con servicios que eliges, como se explica a continuación. Esos servicios reciben las solicitudes necesarias para prestar la función.</p><ul><li>Al activar la sincronización de la biblioteca con iCloud, Panel Flow envía registros a tu base de datos privada de iCloud: títulos y metadatos de publicaciones y capítulos, identificadores de origen, estado y posición de lectura, fechas, ajustes de dirección de lectura, nombres y reglas de colecciones, y el orden y la pertenencia a colecciones.</li><li>Los registros de sincronización no contienen los bytes de archivos de cómics ni imágenes de páginas. La sincronización con iCloud es opcional y está desactivada hasta que la activas en la app. Apple trata los datos de iCloud conforme a tu cuenta de Apple y sus condiciones de privacidad.</li></ul>"
+      },
+      {
+       "id": "analytics",
+       "title": "Analítica opcional",
+       "html": "<p>La analítica está desactivada de forma predeterminada. Si la activas en Ajustes → Privacidad, Panel Flow envía a TelemetryDeck eventos de uso y fiabilidad. Puedes desactivarla en cualquier momento desde el mismo ajuste; esto detiene el envío de eventos futuros de la app, pero no elimina los que el proveedor ya recibió.</p><p>Los eventos usan nombres de acciones predefinidos y categorías limitadas, como el tipo de función u operación, el resultado y rangos aproximados de duración o páginas. No incluyen títulos de cómics o capítulos, contenido de páginas, nombres de archivos, URL, texto de búsqueda, tokens de cuenta ni mensajes de error de texto libre.</p><p>El SDK de TelemetryDeck también envía un identificador seudónimo asociado a una instalación de la app, la hora del evento redondeada a la hora más cercana y detalles técnicos de la app y del dispositivo, como versiones de la app y del sistema operativo y tipo de dispositivo. Toda solicitud de red llega a TelemetryDeck desde tu conexión; TelemetryDeck declara que no guarda direcciones IP. Consulta su <a href=\"https://telemetrydeck.com/docs/guides/privacy-faq/\">preguntas frecuentes de privacidad</a> y su <a href=\"https://telemetrydeck.com/privacy/\">política de privacidad</a>. Al 28 de septiembre de 2026, sus preguntas frecuentes indican que no hay un calendario fijo para borrar eventos almacenados en frío y estiman entre 7 y 10 años, sin garantizar ese plazo.</p><p>La analítica se usa para entender el uso y la fiabilidad de la app, no para publicidad ni seguimiento entre apps.</p>"
+      },
+      {
+       "id": "third",
+       "title": "Fuentes en línea e integraciones de cuentas",
+       "html": "<p>Al navegar o buscar en un catálogo en línea, usar un catálogo OPDS o conectar un servidor Komga, Kavita u otro, el proveedor elegido recibe la solicitud y los datos de red necesarios para responder. Las búsquedas pueden incluir el texto que escribes. Cada proveedor determina su propio tratamiento y conservación.</p><p>Si conectas AniList o MyAnimeList, los tokens de autenticación se guardan en el llavero del sistema operativo. Al buscar, vincular un título o sincronizar el estado de lectura, la consulta pertinente, el título seleccionado, la autorización de la cuenta o el progreso se envía directamente a ese servicio. AniList y MyAnimeList aplican sus propias políticas de privacidad. Panel Flow no incluye estos valores en sus eventos de analítica.</p>"
+      },
+      {
+       "id": "openai",
+       "title": "Voz opcional de OpenAI",
+       "html": "<p>Si agregas tu propia clave de API de OpenAI y eliges la voz de OpenAI, Panel Flow envía el texto que se leerá en voz alta, junto con la voz y la velocidad elegidas, a OpenAI (api.openai.com) para generar el audio. La clave se guarda en el llavero del sistema operativo y solo se envía a OpenAI. El audio generado se guarda en caché en tu dispositivo.</p><p>OpenAI procesa la solicitud conforme a sus propios términos y política de privacidad, y el uso se factura a tu cuenta de OpenAI. Esta función está desactivada hasta que agregues una clave. Panel Flow no incluye este texto en sus eventos de analítica. La lectura en voz alta con el habla integrada de Apple no usa OpenAI.</p>"
+      },
+      {
+       "id": "system",
+       "title": "Funciones del sistema Apple y compras",
+       "html": "<p>Al usar funciones de Apple como traducción, voz o inteligencia del sistema, el texto u otros datos pertinentes se procesan mediante el framework de Apple y la configuración de la plataforma usados por esa función. El procesamiento y la disponibilidad pueden variar según la versión del sistema operativo y los ajustes. Consulta la <a href=\"https://www.apple.com/legal/privacy/\">Política de privacidad de Apple</a> y los ajustes del dispositivo.</p><p>Apple gestiona las transacciones de App Store y la información de cuenta relacionada. Panel Flow no recibe la contraseña de tu cuenta de Apple ni los datos de tu tarjeta de pago.</p>"
+      },
+      {
+       "id": "choices",
+       "title": "Tus opciones y gestión de datos",
+       "html": "<p>Puedes mantener la analítica desactivada o desactivarla en Ajustes → Privacidad. Puedes desactivar la sincronización de iCloud en la app y gestionar el almacenamiento de iCloud desde los ajustes de Apple. Puedes eliminar elementos de la biblioteca o archivos mediante la app y los controles de archivos del dispositivo.</p><p>Para desconectar AniList o MyAnimeList, cierra sesión en Panel Flow; también puedes revocar la autorización desde el servicio. Los datos ya enviados a un servicio externo o a iCloud quedan sujetos a los controles y reglas de conservación de ese proveedor. Contáctanos si tienes preguntas sobre un correo de soporte que hayas enviado.</p>"
+      },
+      {
+       "id": "site",
+       "title": "Este sitio web y soporte",
+       "html": "<p>Estas páginas de política son estáticas y no cargan publicidad, scripts de analítica, fuentes web ni contenido externo incrustado. El sitio está alojado en GitHub Pages; GitHub puede tratar datos de conexión según su <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">declaración de privacidad</a>.</p><p>Si escribes al soporte, la información de tu mensaje y la respuesta la procesan los proveedores de correo que intervienen para que podamos responder. No incluyas contraseñas, tokens de acceso ni archivos de cómics, salvo que soporte solicite específicamente una muestra de diagnóstico segura.</p>"
+      },
+      {
+       "id": "updates",
+       "title": "Cambios",
+       "html": "<p>Podemos actualizar esta política si cambian las funciones o el tratamiento de datos de la app. La fecha siguiente identifica la revisión más reciente.</p>"
+      }
+     ]
+    },
+    "terms": {
+     "title": "Términos de uso",
+     "description": "Los términos para usar Panel Flow y este sitio web.",
+     "eyebrow": "Términos de Panel Flow",
+     "intro": "Las reglas para usar Panel Flow, en lenguaje claro.",
+     "effective": "Vigente desde {date}",
+     "sections": [
+      {
+       "id": "about",
+       "title": "Acerca de estos términos",
+       "html": "<p>Estos Términos de uso se aplican al uso de Panel Flow, la app Panel Flow y este sitio web. Tu licencia para usar la app se otorga conforme al Contrato de Licencia de Usuario Final de Aplicación con Licencia estándar de Apple (el \"EULA de Apple\"), salvo que Apple y Panel Flow acuerden otra cosa.</p>\n<p>Estos términos explican cómo pueden usarse la app y los servicios que la rodean. Si entran en conflicto con el EULA de Apple respecto de tu licencia de la app, prevalece el EULA de Apple.</p>"
+      },
+      {
+       "id": "what",
+       "title": "Qué es Panel Flow",
+       "html": "<p>Panel Flow es un lector de archivos de cómics y manga y de contenido de las fuentes que tú elijas. No aloja, vende ni distribuye cómics ni manga.</p>"
+      },
+      {
+       "id": "content",
+       "title": "Tu contenido y tu responsabilidad",
+       "html": "<p>Eres responsable de los archivos que importas y del contenido que lees. Usa Panel Flow solo con contenido al que tengas derecho de acceder y que puedas usar, y respeta los derechos de autor y los términos de las personas y los servicios que lo proporcionan.</p>"
+      },
+      {
+       "id": "services",
+       "title": "Servicios de terceros",
+       "html": "<p>Algunas funciones se conectan directamente con servicios que tú eliges, como catálogos OPDS, servidores Komga y Kavita, catálogos en línea como Internet Archive y MangaDex, AniList, MyAnimeList, iCloud y, si agregas tu propia clave de API, OpenAI para la voz.</p>\n<p>Panel Flow no opera esos servicios. Se aplican sus propios términos y políticas de privacidad, pueden cambiar o terminar en cualquier momento, y cualquier costo que cobren (por ejemplo, el uso de OpenAI con tu propia clave) es un asunto entre tú y ellos.</p>"
+      },
+      {
+       "id": "assisted",
+       "title": "Lectura asistida",
+       "html": "<p>La detección de viñetas, el reconocimiento de texto, la traducción y la voz son automáticos y pueden cometer errores. No dependas de ellos cuando un error pueda tener consecuencias.</p>"
+      },
+      {
+       "id": "use",
+       "title": "Uso aceptable",
+       "html": "<p>No uses Panel Flow para infringir derechos de autor u otros derechos, para incumplir los términos de un servicio al que te conectes ni para interferir en su funcionamiento. No intentes extraer el código fuente de la app ni eludir sus protecciones, salvo donde la ley lo permita.</p>"
+      },
+      {
+       "id": "privacy",
+       "title": "Privacidad",
+       "html": "<p>La <a href=\"privacy-policy-es-MX.html\">Política de privacidad</a> explica qué datos permanecen en tu dispositivo y cuáles se envían a los servicios que activas.</p>"
+      },
+      {
+       "id": "liability",
+       "title": "Sin garantía y límites de responsabilidad",
+       "html": "<p>Panel Flow se ofrece \"tal cual\" y \"según disponibilidad\". En la medida que la ley lo permita, no prometemos que funcione sin interrupciones ni sin errores, y no somos responsables de daños indirectos o consecuentes ni de la pérdida de datos, de contenido o del acceso a un servicio de terceros.</p>\n<p>Nada en estos términos limita los derechos que tienes por ley y a los que no se puede renunciar.</p>"
+      },
+      {
+       "id": "changes",
+       "title": "Cambios",
+       "html": "<p>Podemos actualizar estos términos cuando cambien la app o la ley. La fecha de arriba identifica la última revisión. Si sigues usando Panel Flow después de un cambio, aceptas los términos actualizados.</p>"
+      },
+      {
+       "id": "law",
+       "title": "Ley aplicable",
+       "html": "<p>Estos términos se rigen por las leyes de la República Federativa de Brasil.</p>"
+      },
+      {
+       "id": "contact",
+       "title": "Contacto",
+       "html": "<p>Preguntas sobre estos términos: <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>. También puedes usar la <a href=\"support-es-MX.html\">página de soporte</a>.</p>"
+      }
+     ]
+    },
+    "support": {
+     "title": "Soporte",
+     "description": "Obtén ayuda con Panel Flow: cómo contactarnos, qué incluir y respuestas rápidas.",
+     "eyebrow": "Soporte de Panel Flow",
+     "intro": "¿Preguntas, problemas o comentarios sobre Panel Flow? Escríbenos.",
+     "sections": [
+      {
+       "id": "contact",
+       "title": "Contáctanos",
+       "html": "<p>Escríbenos a <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>. Leemos todos los mensajes y respondemos por correo.</p>\n<p>Para ayudarte más rápido, incluye:</p>\n<ul><li>La versión de Panel Flow y la versión de iOS o iPadOS.</li><li>El modelo de tu dispositivo.</li><li>Qué hiciste, qué esperabas y qué ocurrió.</li><li>Una captura de pantalla, si ayuda.</li></ul>\n<p>Por favor no incluyas contraseñas, claves de API, tokens de acceso ni archivos de cómics, salvo que te pidamos una muestra segura.</p>"
+      },
+      {
+       "id": "answers",
+       "title": "Respuestas rápidas",
+       "html": "<p><strong>¿Qué archivos puedo importar?</strong><br>Panel Flow abre cómics y manga en formato CBZ, ZIP, CBR, CB7, CBT y PDF.</p>\n<p><strong>¿Mi biblioteca se guarda en línea?</strong><br>No. Tu biblioteca, tu progreso de lectura, tus preferencias y los archivos importados permanecen en tu dispositivo. La sincronización con iCloud es opcional y sigue desactivada hasta que la actives en Configuraciones.</p>\n<p><strong>¿Están activadas las analíticas de uso?</strong><br>No. Las analíticas de uso anónimas están desactivadas de forma predeterminada. Puedes activarlas o desactivarlas en Configuraciones → Privacidad.</p>\n<p><strong>¿Necesito una cuenta de OpenAI?</strong><br>No. La voz de OpenAI es opcional y usa tu propia clave de API, que agregas en Configuraciones → Voz de OpenAI. La lectura en voz alta también funciona con el habla integrada de Apple, sin ninguna clave.</p>\n<p><strong>¿Cómo consulto sobre mis datos?</strong><br>Escríbenos. La <a href=\"privacy-policy-es-MX.html\">política de privacidad</a> explica qué conserva Panel Flow y a dónde van los datos.</p>"
+      },
+      {
+       "id": "policies",
+       "title": "Políticas",
+       "html": "<p>Consulta la <a href=\"privacy-policy-es-MX.html\">Política de privacidad</a> y los <a href=\"terms-es-MX.html\">Términos de uso</a>.</p>"
+      }
+     ]
+    }
+   }
+  },
+  "pt-BR": {
+   "home": "Início do Panel Flow",
+   "language": "Idioma",
+   "footer": "Legal e suporte",
+   "contact": "Contato",
+   "og_image_alt": "Panel Flow, um leitor inteligente de quadrinhos e mangás, com três capturas do app",
+   "pages": {
+    "privacy-policy": {
+     "title": "Política de Privacidade",
+     "description": "Como o Panel Flow trata informações no iPhone, iPad e Mac.",
+     "eyebrow": "Informações de privacidade do Panel Flow",
+     "intro": "Como o Panel Flow trata informações no iPhone, iPad e Mac.",
+     "effective": "Vigente desde {date}",
+     "sections": [
+      {
+       "id": "scope",
+       "title": "Escopo e contato",
+       "html": "<p>Esta política se aplica ao Panel Flow para iOS, iPadOS e macOS. Ela descreve o app e as escolhas disponíveis ao usar seus recursos on-line opcionais.</p><p>Para dúvidas ou solicitações sobre privacidade, escreva para <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>.</p>"
+      },
+      {
+       "id": "library",
+       "title": "Biblioteca e arquivos",
+       "html": "<p>A biblioteca, a atividade de leitura, as preferências e os arquivos de quadrinhos importados ou baixados ficam no dispositivo para o uso normal do app. O Panel Flow não envia imagens de páginas nem o conteúdo dos arquivos para um servidor de conteúdo operado pelo Panel Flow.</p><p>Alguns recursos se conectam diretamente a serviços escolhidos por você, como explicado abaixo. Esses serviços recebem as solicitações necessárias para fornecer o recurso.</p><ul><li>Ao ativar a sincronização da biblioteca com o iCloud, o Panel Flow envia registros à sua base de dados privada do iCloud: títulos e metadados de publicações e capítulos, identificadores de origem, status e posição de leitura, datas, ajustes de direção de leitura, nomes e regras de coleções e a ordem e participação em coleções.</li><li>Os registros de sincronização não contêm os bytes dos arquivos de quadrinhos nem imagens das páginas. A sincronização com iCloud é opcional e fica desligada até você ativá-la no app. A Apple trata dados do iCloud conforme sua Conta Apple e os termos de privacidade da Apple.</li></ul>"
+      },
+      {
+       "id": "analytics",
+       "title": "Analítica opcional",
+       "html": "<p>A analítica fica desligada por padrão. Se você ativá-la em Ajustes → Privacidade, o Panel Flow envia eventos de uso e confiabilidade ao TelemetryDeck. Você pode desligá-la a qualquer momento no mesmo ajuste; isso interrompe o envio de eventos futuros do app, mas não remove os que o provedor já recebeu.</p><p>Os eventos usam nomes de ações predefinidos e categorias limitadas, como tipo de recurso ou operação, resultado e faixas aproximadas de duração ou quantidade de páginas. Eles não incluem títulos de quadrinhos ou capítulos, conteúdo de páginas, nomes de arquivos, URLs, texto de busca, tokens de contas ou mensagens de erro em texto livre.</p><p>O SDK do TelemetryDeck também envia um identificador pseudônimo associado à instalação do app, o horário do evento arredondado para a hora mais próxima e detalhes técnicos do app e dispositivo, como versões do app e sistema operacional e tipo de dispositivo. Toda solicitação de rede chega ao TelemetryDeck a partir da sua conexão; o TelemetryDeck declara que não armazena endereços IP. Consulte as <a href=\"https://telemetrydeck.com/docs/guides/privacy-faq/\">perguntas frequentes de privacidade</a> e a <a href=\"https://telemetrydeck.com/privacy/\">política de privacidade</a> do serviço. Em 28 de setembro de 2026, as perguntas frequentes informam que não há um prazo fixo para excluir eventos em armazenamento frio e estimam de 7 a 10 anos, sem garantia desse período.</p><p>A analítica é usada para entender o uso e a confiabilidade do app, não para publicidade ou rastreamento entre apps.</p>"
+      },
+      {
+       "id": "third",
+       "title": "Fontes on-line e integrações de contas",
+       "html": "<p>Ao navegar ou buscar em um catálogo on-line, usar um catálogo OPDS ou conectar um servidor Komga, Kavita ou outro, o provedor escolhido recebe a solicitação e os dados de rede necessários para responder. Buscas podem incluir o texto digitado por você. Cada provedor controla seu próprio tratamento e retenção.</p><p>Se você conectar o AniList ou o MyAnimeList, tokens de autenticação ficam armazenados no Chaves do sistema operacional. Ao buscar, vincular um título ou sincronizar o status de leitura, a consulta relevante, o título escolhido, a autorização da conta ou o progresso é enviado diretamente ao serviço correspondente. AniList e MyAnimeList aplicam suas próprias políticas de privacidade. O Panel Flow não inclui esses valores nos eventos de analítica.</p>"
+      },
+      {
+       "id": "openai",
+       "title": "Voz opcional da OpenAI",
+       "html": "<p>Se você adicionar a sua própria chave de API da OpenAI e escolher a voz da OpenAI, o Panel Flow envia o texto a ser lido em voz alta, junto com a voz e a velocidade escolhidas, à OpenAI (api.openai.com) para gerar a fala. A chave fica guardada no Keychain do sistema operacional e é enviada somente à OpenAI. O áudio gerado fica em cache no seu aparelho.</p><p>A OpenAI processa a solicitação conforme os seus próprios termos e a sua política de privacidade, e o uso é cobrado na sua conta da OpenAI. Este recurso fica desligado até você adicionar uma chave. O Panel Flow não inclui esse texto em seus eventos de analítica. A leitura em voz alta com a fala integrada da Apple não usa a OpenAI.</p>"
+      },
+      {
+       "id": "system",
+       "title": "Recursos do sistema Apple e compras",
+       "html": "<p>Ao usar recursos fornecidos pela Apple, como tradução, fala ou inteligência do sistema, o texto ou outro dado necessário é processado pelo framework da Apple e pela configuração da plataforma usada pelo recurso. O processamento e a disponibilidade podem variar conforme a versão do sistema operacional e os ajustes. Consulte a <a href=\"https://www.apple.com/legal/privacy/\">Política de Privacidade da Apple</a> e os ajustes do dispositivo.</p><p>A Apple processa transações da App Store e informações de conta relacionadas. O Panel Flow não recebe a senha da sua Conta Apple nem os dados do cartão de pagamento.</p>"
+      },
+      {
+       "id": "choices",
+       "title": "Suas escolhas e controle dos dados",
+       "html": "<p>Você pode manter a analítica desligada ou desativá-la em Ajustes → Privacidade. Pode desligar a sincronização com iCloud no app e gerenciar o armazenamento do iCloud nos ajustes da Apple. Você pode remover itens da biblioteca ou arquivos usando o app e os controles de arquivos do dispositivo.</p><p>Para desconectar o AniList ou o MyAnimeList, encerre a sessão no Panel Flow; também é possível revogar a autorização no serviço. Dados já enviados a serviços externos ou ao iCloud seguem os controles e regras de retenção desses provedores. Entre em contato se tiver dúvidas sobre um e-mail enviado ao suporte.</p>"
+      },
+      {
+       "id": "site",
+       "title": "Este site e o suporte",
+       "html": "<p>Estas páginas de política são estáticas e não carregam publicidade, scripts de analítica, fontes da web ou conteúdo externo incorporado. O site é hospedado pelo GitHub Pages; o GitHub pode tratar dados de conexão conforme sua <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">declaração de privacidade</a>.</p><p>Se você enviar um e-mail ao suporte, as informações da mensagem e da resposta são processadas pelos provedores de e-mail envolvidos para que possamos responder. Não envie senhas, tokens de acesso ou arquivos de quadrinhos, a menos que o suporte peça especificamente uma amostra segura para diagnóstico.</p>"
+      },
+      {
+       "id": "updates",
+       "title": "Alterações",
+       "html": "<p>Podemos atualizar esta política quando os recursos ou o tratamento de dados do app mudarem. A data abaixo identifica a revisão mais recente.</p>"
+      }
+     ]
+    },
+    "terms": {
+     "title": "Termos de Uso",
+     "description": "Os termos para usar o Panel Flow e este site.",
+     "eyebrow": "Termos do Panel Flow",
+     "intro": "As regras para usar o Panel Flow, em linguagem simples.",
+     "effective": "Em vigor desde {date}",
+     "sections": [
+      {
+       "id": "about",
+       "title": "Sobre estes termos",
+       "html": "<p>Estes Termos de Uso se aplicam ao uso do Panel Flow, do aplicativo Panel Flow e deste site. Sua licença para usar o aplicativo é concedida nos termos do Contrato de Licença de Usuário Final de Aplicativo Licenciado padrão da Apple (o \"EULA da Apple\"), a menos que a Apple e o Panel Flow combinem outra coisa.</p>\n<p>Estes termos explicam como o aplicativo e os serviços ao redor dele podem ser usados. Se houver conflito com o EULA da Apple quanto à sua licença do aplicativo, prevalece o EULA da Apple.</p>"
+      },
+      {
+       "id": "what",
+       "title": "O que é o Panel Flow",
+       "html": "<p>O Panel Flow é um leitor de arquivos de quadrinhos e mangás e de conteúdo das fontes que você escolher. Ele não hospeda, vende nem distribui quadrinhos ou mangás.</p>"
+      },
+      {
+       "id": "content",
+       "title": "Seu conteúdo e sua responsabilidade",
+       "html": "<p>Você é responsável pelos arquivos que importa e pelo conteúdo que lê. Use o Panel Flow apenas com conteúdo ao qual você tenha direito de acesso e que possa usar, e respeite os direitos autorais e os termos das pessoas e dos serviços que o fornecem.</p>"
+      },
+      {
+       "id": "services",
+       "title": "Serviços de terceiros",
+       "html": "<p>Alguns recursos se conectam diretamente a serviços que você escolhe, como catálogos OPDS, servidores Komga e Kavita, catálogos online como o Internet Archive e o MangaDex, AniList, MyAnimeList, iCloud e, se você adicionar a sua própria chave de API, a OpenAI para a voz.</p>\n<p>Esses serviços não são operados pelo Panel Flow. Valem os termos e as políticas de privacidade de cada um, eles podem mudar ou acabar a qualquer momento, e qualquer custo que cobrem (por exemplo, o uso da OpenAI com a sua própria chave) é assunto entre você e eles.</p>"
+      },
+      {
+       "id": "assisted",
+       "title": "Leitura assistida",
+       "html": "<p>A detecção de quadros, o reconhecimento de texto, a tradução e a voz são automáticos e podem errar. Não dependa deles quando um erro puder ter consequências.</p>"
+      },
+      {
+       "id": "use",
+       "title": "Uso aceitável",
+       "html": "<p>Não use o Panel Flow para violar direitos autorais ou outros direitos, para descumprir os termos de um serviço ao qual você se conecta nem para interferir no funcionamento dele. Não tente extrair o código-fonte do aplicativo nem burlar suas proteções, exceto quando a lei permitir.</p>"
+      },
+      {
+       "id": "privacy",
+       "title": "Privacidade",
+       "html": "<p>A <a href=\"privacy-policy-pt-BR.html\">Política de Privacidade</a> explica quais dados ficam no seu aparelho e quais são enviados aos serviços que você ativa.</p>"
+      },
+      {
+       "id": "liability",
+       "title": "Sem garantia e limites de responsabilidade",
+       "html": "<p>O Panel Flow é oferecido \"como está\" e \"conforme disponível\". Na medida em que a lei permitir, não prometemos que funcione sem interrupções nem sem erros, e não nos responsabilizamos por danos indiretos ou consequenciais nem pela perda de dados, de conteúdo ou do acesso a um serviço de terceiros.</p>\n<p>Nada nestes termos limita direitos que você tem por lei e que não podem ser renunciados.</p>"
+      },
+      {
+       "id": "changes",
+       "title": "Alterações",
+       "html": "<p>Podemos atualizar estes termos quando o aplicativo ou a lei mudarem. A data acima identifica a revisão mais recente. Continuar usando o Panel Flow depois de uma alteração significa que você aceita os termos atualizados.</p>"
+      },
+      {
+       "id": "law",
+       "title": "Lei aplicável",
+       "html": "<p>Estes termos são regidos por as leis da República Federativa do Brasil.</p>"
+      },
+      {
+       "id": "contact",
+       "title": "Contato",
+       "html": "<p>Dúvidas sobre estes termos: <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>. Você também pode usar a <a href=\"support-pt-BR.html\">página de suporte</a>.</p>"
+      }
+     ]
+    },
+    "support": {
+     "title": "Suporte",
+     "description": "Receba ajuda com o Panel Flow: como falar conosco, o que informar e respostas rápidas.",
+     "eyebrow": "Suporte do Panel Flow",
+     "intro": "Dúvidas, problemas ou sugestões sobre o Panel Flow? Escreva para nós.",
+     "sections": [
+      {
+       "id": "contact",
+       "title": "Fale conosco",
+       "html": "<p>Envie um e-mail para <a href=\"mailto:sciasxp@gmail.com\">sciasxp@gmail.com</a>. Lemos todas as mensagens e respondemos por e-mail.</p>\n<p>Para responder mais rápido, informe:</p>\n<ul><li>A versão do Panel Flow e a versão do iOS ou do iPadOS.</li><li>O modelo do seu aparelho.</li><li>O que você fez, o que esperava e o que aconteceu.</li><li>Uma captura de tela, se ajudar.</li></ul>\n<p>Por favor, não envie senhas, chaves de API, tokens de acesso nem arquivos de quadrinhos, a menos que peçamos uma amostra segura.</p>"
+      },
+      {
+       "id": "answers",
+       "title": "Respostas rápidas",
+       "html": "<p><strong>Quais arquivos posso importar?</strong><br>O Panel Flow abre quadrinhos e mangás nos formatos CBZ, ZIP, CBR, CB7, CBT e PDF.</p>\n<p><strong>Minha biblioteca fica guardada online?</strong><br>Não. Sua biblioteca, seu progresso de leitura, suas preferências e os arquivos importados ficam no seu aparelho. A sincronização com o iCloud é opcional e continua desligada até você ativá-la em Configurações.</p>\n<p><strong>As análises de uso estão ligadas?</strong><br>Não. As análises anônimas de uso ficam desligadas por padrão. Você pode ligá-las ou desligá-las em Configurações → Privacidade.</p>\n<p><strong>Preciso de uma conta da OpenAI?</strong><br>Não. A voz da OpenAI é opcional e usa a sua própria chave de API, que você adiciona em Configurações → Voz da OpenAI. A leitura em voz alta também funciona com a fala integrada da Apple, sem nenhuma chave.</p>\n<p><strong>Como pergunto sobre os meus dados?</strong><br>Escreva para nós. A <a href=\"privacy-policy-pt-BR.html\">política de privacidade</a> explica o que o Panel Flow guarda e para onde os dados vão.</p>"
+      },
+      {
+       "id": "policies",
+       "title": "Políticas",
+       "html": "<p>Leia a <a href=\"privacy-policy-pt-BR.html\">Política de Privacidade</a> e os <a href=\"terms-pt-BR.html\">Termos de Uso</a>.</p>"
+      }
+     ]
+    }
+   }
+  }
+ }
+}

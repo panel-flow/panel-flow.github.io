@@ -153,6 +153,10 @@ class LandingCheckTests(unittest.TestCase):
     def test_the_real_site_passes(self):
         self.assertEqual(self.problems(), [])
 
+    def test_a_legal_page_edited_by_hand_is_named(self):
+        self.edit("terms-pt-BR.html", "Termos de Uso</h1>", "Termos</h1>")
+        self.has("legal: terms-pt-BR.html: differs from what _src/ builds")
+
     GOOD_VIDEO = ('<video controls muted playsinline preload="none" poster="img/og-card.png" width="640" height="1390" aria-label="x">'
                   '<source src="video/release/demo.mp4" type="video/mp4"></video>')
 
